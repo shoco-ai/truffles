@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "truffle"
+version = "0.1.0"
+description = "Tools for data extraction from the web with AI"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "truffle", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+playwright = "^1.49.0"
+
+
+[tool.poetry.group.dev.dependencies]
+jupyter = "^1.1.1"
+ipykernel = "^6.29.5"
+notebook = "^7.2.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
