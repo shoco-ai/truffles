@@ -1,0 +1,3 @@
+
+class TLocator:
+    pass
