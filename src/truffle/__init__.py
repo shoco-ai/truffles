@@ -1,5 +1,5 @@
 from playwright.async_api import Page
-from .tpage import TPage
+from .t_page import TPage
 from playwright.async_api import Browser
 
 async def wrap(browser: Browser):

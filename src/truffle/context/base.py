@@ -1,6 +1,8 @@
 from typing import Optional, Protocol
 from abc import ABC, abstractmethod
 
+# TODO: change to page digest?
+
 class ContextRepository(ABC):
     """Abstract base class for selector hash repository"""
     

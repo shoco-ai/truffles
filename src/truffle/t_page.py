@@ -2,7 +2,7 @@ from playwright.async_api import Page, Locator
 from typing import List, Optional, Any, Callable
 from .context_repository import ContextRepository
 import asyncio
-from .tlocator import TLocator
+from .t_locator import TLocator
 
 class TPage:
     """Enhanced Page class that adds additional functionality to Playwright's Page"""
@@ -13,22 +13,24 @@ class TPage:
         
     async def _get_page_hash(self) -> str:
         """Get unique hash for current page state"""
+
+        # TODO: do this
         # Implementation depends on your specific needs
         raise NotImplementedError("Page hash not implemented")
         return await self.page.evaluate('document.documentElement.outerHTML')
         
 
-    async def _ai_find_selector(self, action_name: str) -> str:
-        """Use AI to find appropriate selector"""
+    async def _ai_find_entry_point(self, action_name: str) -> str:
+        """Use AI to find the needed function input"""
         # Implementation of AI selector finding logic
         # This would use LangChain or similar to analyze the page and return a selector
         raise NotImplementedError("AI selector finding not implemented")
         
 
-    async def _execute_with_selector_strategy(self, 
-                                            action_name: str,
-                                            selector: Optional[str],
-                                            action: Callable[[str], Any]) -> Any:
+    async def _execute_function(self, 
+                                action_name: str,
+                                selector: Optional[str],
+                                action: Callable[[str], Any]) -> Any:
         """Execute action with fallback to AI if needed"""
         if selector:
             try:
@@ -50,7 +52,7 @@ class TPage:
                 
         # AI approach
         try:
-            ai_selector = await self._ai_find_selector(action_name)
+            ai_selector = await self._ai_find_entry_point(action_name)
             result = await action(ai_selector)
             await self.hash_repository.store_selector(page_hash, action_name, ai_selector)
             return result
@@ -68,7 +70,7 @@ class TPage:
         Returns: list[TElement]
         """
 
-        return await self._execute_with_selector_strategy(
+        return await self._execute_function(
             "main_list",
             selector,
             list_action
@@ -117,7 +119,7 @@ class TPage:
             else:
                 raise ValueError("match_mode must be one of: 'exact', 'key_only', 'value_only'")
         else:
-            return await self._execute_with_selector_strategy(
+            return await self._execute_function(
                 "list_items",
                 None,
                 lambda selector: self.page.locator(selector).all()
@@ -145,7 +147,7 @@ class TPage:
         try to AI this.
         """
             
-        return await self._execute_with_selector_strategy(
+        return await self._execute_function(
             "paginate",
             next_button_selector,
             paginate_action
@@ -168,6 +170,8 @@ class TPage:
     def __getattr__(self, name: str):
         """Delegate any undefined attributes/methods to the underlying page object"""
         output = getattr(self.page, name)
+
+        # TODO: add locator list conversion
 
         if isinstance(output, Locator):
             return TLocator(output)
