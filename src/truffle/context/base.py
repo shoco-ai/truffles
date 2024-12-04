@@ -3,8 +3,8 @@ from abc import ABC, abstractmethod
 
 # TODO: change to page digest?
 
-class ContextRepository(ABC):
-    """Abstract base class for selector hash repository"""
+class ContextStore(ABC):
+    """Abstract base class for selector hash store"""
     
     @abstractmethod
     async def get_marker(self, page_hash: str, action_name: str) -> Optional[str]:

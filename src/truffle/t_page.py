@@ -50,7 +50,7 @@ class TPage:
             except Exception as e:
                 print(f"Error with provided selector: {e}")
                 
-        # Try getting selector from repository
+        # Try getting selector from store
         page_hash = await self._get_page_hash()
         stored_selector = await ContextManager.get_marker(page_hash, action_name)
         
@@ -73,7 +73,7 @@ class TPage:
 
     async def get_main_list(
         self,
-        detection_mode: str = "basic",
+        detection_mode: str = "dynamic",
         force_detect: bool = False
     ) -> List[TLocator]:
         """
@@ -88,9 +88,9 @@ class TPage:
         """
         # Try to get cached selector if not forcing detection
         if not force_detect:
-            page_hash = await self.evaluate('document.documentElement.outerHTML')
+            page_state = await self.evaluate('document.documentElement.outerHTML')
             cached_selector = await ContextManager.get_marker(
-                page_hash=page_hash,
+                page_state=page_state,
                 action_name="list_detection"
             )
             
@@ -200,14 +200,11 @@ class TPage:
             match_mode=match_mode
         )
 
-        print("wrapper type", type(wrappers[0]))
-
         all_children = []
         for wrapper in wrappers:
             children = await wrapper.locator(':scope > *').all()
             all_children.extend(children)
-        
-        print("child type", type(all_children[0]))
+    
 
         return all_children
 
@@ -218,6 +215,7 @@ class TPage:
         Similar to above. If conventional selector/attribute given, operate as playwright would, otherwise
         try to AI this.
         """
+        raise NotImplementedError("Pagination not implemented")
             
         return await self._execute_function(
             "paginate",
