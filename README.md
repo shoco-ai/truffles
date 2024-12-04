@@ -1,54 +1,61 @@
 # Truffle 🍄
 
-> AI-powered web agents and data extraction, made scalable and reusable.
+> The first open-source framework for AI-powered web automation that builds on Playwright and learns globally.
 
-Truffle is an open-source framework that brings AI capabilities to web automation and data extraction while keeping costs low and reusability high.
+Truffle extends Playwright with AI capabilities for web automation and data extraction, while introducing revolutionary global caching of AI interactions that the entire community can benefit from.
 
 ```python
 from truffle import wrap
 async def extract_products():
-    page = await wrap(browser)
+    page = await wrap(browser)  # Wraps any Playwright browser
     await page.goto("https://example.com/products")
-    # Automatically finds and extracts product list
+    # AI-powered automation with community-shared intelligence
     products = await page.get_main_list()
-    # AI assistance only used if needed, results cached for reuse
+    # Use familiar Playwright syntax with AI assistance when needed
     for product in products:
         title = await product.get_text("h2")
         price = await product.get_text("[data-price]")
 ```
 
+## Why Truffle is Revolutionary
+
+### 🌐 100% Open Source
+- **Fully Transparent**: Every component is open source, from AI prompts to caching logic
+- **Community Driven**: Shape the future of AI automation through contributions
+- **No Vendor Lock-in**: Own and control your automation infrastructure
+
+### 🧠 Global Intelligence Sharing
+- **Community Knowledge Base**: Successfully used prompts and patterns are shared globally
+- **Collective Learning**: Each automation makes the entire system smarter
+- **Cost Sharing**: Benefit from cached AI interactions across all users
+
+### ⚡ Seamless Playwright Integration
+- **Drop-in Enhancement**: Add to existing Playwright projects with a single wrapper
+- **Familiar Syntax**: Keep using Playwright's intuitive API
+- **Best of Both Worlds**: Combine Playwright's reliability with AI capabilities
+
 ## Key Features
 
-### 🧠 Context-Aware Automation
-The ContextStore system remembers successful element selectors and interaction patterns, reducing unnecessary AI calls and making your automations more reliable:
+### 🛠️ Intelligent Tools with Global Caching
+- **Smart List Detection**: Automatically identifies content patterns
+- **Context-Aware Navigation**: Intelligent pagination and traversal
+- **Flexible Element Location**: AI-powered element finding
+- All powered by community-shared intelligence
 
-- **Cost Efficient**: AI is only used when needed, with successful patterns cached for reuse
-- **Self-Learning**: Builds a knowledge base of working selectors across different sites
-- **Flexible Storage**: In-memory, persistent, or distributed storage options
-
-### 🛠️ Intelligent Tools
-
-- **List Detection**: Automatically identifies and extracts repeated content patterns
-- **Smart Navigation**: Context-aware pagination and traversal
-- **Attribute Matching**: Flexible element location using partial or exact matches
-- **More Coming**: Structure recognition, form filling, and other AI-powered capabilities
-
-## Why Truffle?
-
-- **Reduced Costs**: Minimize AI usage through intelligent caching
-- **Better Reliability**: Self-healing automations that adapt to site changes
-- **Developer Friendly**: Clean API that feels like standard Playwright
-- **Production Ready**: Built for scale with async support and flexible storage
+### 📦 Production Ready
+- **Built on Playwright**: Enterprise-grade foundation
+- **Async Support**: Built for scale
+- **Flexible Storage**: Choose your caching strategy
 
 ## Status
 
-This project is under active development. We're working on:
-- Additional AI-powered tools
-- Enhanced context management
-- Documentation and examples
+This is an active open-source project. We're working on:
+- Expanding the shared knowledge base
+- Additional AI-powered capabilities
+- Enhanced documentation and examples
 - Performance optimizations
 
 ## Contributing
 
-We welcome contributions! Check out our issues page or contact us directly.
+Join us in revolutionizing web automation! Check out our issues page or contact us directly.
 
