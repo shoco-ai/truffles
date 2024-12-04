@@ -1,23 +1,35 @@
 from playwright.async_api import Page, Locator
 from typing import List, Optional, Any, Callable
-from .context_repository import ContextRepository
+from .context import ContextManager
 import asyncio
 from .t_locator import TLocator
+from .tools.list_detector import ListDetector, DetectionMode
+from .context.state import ContextManager
+from inspect import iscoroutinefunction
+
+from .utils.wrap import wrap_collection
 
 class TPage:
     """Enhanced Page class that adds additional functionality to Playwright's Page"""
     
     def __init__(self, page: Page):
-        self.page = page
+        self._page = page
         self._current_page = 1
+        self._list_detector = None  # Lazy initialization
         
+    @property
+    def list_detector(self) -> ListDetector:
+        if self._list_detector is None:
+            self._list_detector = ListDetector()
+        return self._list_detector
+    
     async def _get_page_hash(self) -> str:
         """Get unique hash for current page state"""
 
         # TODO: do this
         # Implementation depends on your specific needs
         raise NotImplementedError("Page hash not implemented")
-        return await self.page.evaluate('document.documentElement.outerHTML')
+        return await self.evaluate('document.documentElement.outerHTML')
         
 
     async def _ai_find_entry_point(self, action_name: str) -> str:
@@ -40,7 +52,7 @@ class TPage:
                 
         # Try getting selector from repository
         page_hash = await self._get_page_hash()
-        stored_selector = await self.hash_repository.get_selector(page_hash, action_name)
+        stored_selector = await ContextManager.get_marker(page_hash, action_name)
         
         if stored_selector:
             try:
@@ -48,39 +60,69 @@ class TPage:
                 return result
             except Exception:
                 # Remove failed selector and try AI approach
-                await self.hash_repository.remove_selector(page_hash, action_name)
+                await ContextManager.remove_marker(page_hash, action_name)
                 
         # AI approach
         try:
             ai_selector = await self._ai_find_entry_point(action_name)
             result = await action(ai_selector)
-            await self.hash_repository.store_selector(page_hash, action_name, ai_selector)
+            await ContextManager.store_marker(page_hash, action_name, ai_selector)
             return result
         except Exception as e:
             raise Exception(f"Failed to find valid selector for {action_name}: {e}")
 
     async def get_main_list(
-        prompt: str = None,
-    ):
-        """
-        If all attributes are empty, the class attempts to use the PageContext 
-        to find a working selector for this function. If prompt, then we do
-        some agentql things. If selector or attribute we are conventional.
-        
-        Returns: list[TElement]
-        """
-
-        return await self._execute_function(
-            "main_list",
-            selector,
-            list_action
-        )
-
-    async def get_list_by_items(
         self,
-        item_selector: str = None,
-        item_attribute: dict = None,
-        match_mode: str = 'exact'  # Can be 'exact', 'key_only', or 'value_only'
+        detection_mode: str = "basic",
+        force_detect: bool = False
+    ) -> List[TLocator]:
+        """
+        Get the main list from the page.
+        
+        Args:
+            detection_mode: One of "basic", "statistical", "dynamic"
+            force_detect: If True, bypass cache and force new detection
+            
+        Returns:
+            List of TLocator objects representing list items
+        """
+        # Try to get cached selector if not forcing detection
+        if not force_detect:
+            page_hash = await self.evaluate('document.documentElement.outerHTML')
+            cached_selector = await ContextManager.get_marker(
+                page_hash=page_hash,
+                action_name="list_detection"
+            )
+            
+            if cached_selector:
+                items = await self.locator(cached_selector).all()
+                if items:
+                    return [TLocator(item) for item in items]
+        
+        # Convert string mode to enum
+        try:
+            mode = DetectionMode(detection_mode.lower())
+        except ValueError:
+            raise ValueError(
+                f"Invalid detection mode: {detection_mode}. "
+                f"Must be one of: {[m.value for m in DetectionMode]}"
+            )
+        
+        # Perform detection
+        raise NotImplementedError("List detection not implemented and self._page!!")
+        items = await self.list_detector.execute(self._page, mode=mode)
+        if not items:
+            raise Exception(
+                f"Could not detect list structure using {detection_mode} mode"
+            )
+            
+        return [TLocator(item) for item in items]
+
+    async def get_list_by_item(
+        self,
+        item_selector: Optional[str] = None,
+        item_attribute: Optional[dict] = None,
+        match_mode: str = 'contains'  # Can be 'exact', 'contains', 'key_only', or 'value_only'
     ) -> List[TLocator]:
         """
         Get list of items by item selector or attribute.
@@ -95,55 +137,85 @@ class TPage:
             
         Returns:
             List of TLocator objects representing the found items
+        
+        Raises:
+            ValueError: If neither item_selector nor item_attribute is provided, or if both are provided
         """
+
+        allowed_match_modes = ('exact', 'contains')
+
+        # Input validation
         if item_selector and item_attribute:
             raise ValueError("Cannot provide both item_selector and item_attribute")
-            
+        if not item_selector and not item_attribute:
+            raise ValueError("Must provide either item_selector or item_attribute")
+
+        # Handle item_selector case
         if item_selector:
-            elements = await self.page.locator(item_selector).all()
-        elif item_attribute:
-            if match_mode == 'exact':
-                # Exact key-value matching
-                attribute_selector = ' and '.join([f'[{key}="{value}"]' for key, value in item_attribute.items()])
-                elements = await self.page.locator(f"*{attribute_selector}").all()
-            elif match_mode == 'key_only':
-                # Match elements that have all specified keys
-                attribute_selector = ' and '.join([f'[{key}]' for key in item_attribute.keys()])
-                elements = await self.page.locator(f"*{attribute_selector}").all()
-            elif match_mode == 'value_only':
-                # Match elements that have any of the specified values
-                value_conditions = ' or '.join([
-                    f'[*="{value}"]' for value in item_attribute.values()
-                ])
-                elements = await self.page.locator(f"*:is({value_conditions})").all()
-            else:
-                raise ValueError("match_mode must be one of: 'exact', 'key_only', 'value_only'")
+            elements = await self.locator(item_selector).all()
+            return [TLocator(element) for element in elements]
+
+        # Handle item_attribute case
+        if match_mode not in allowed_match_modes:
+            raise ValueError(f"match_mode must be one of: {allowed_match_modes}")
+        
+        if match_mode == 'exact':
+            attribute_selector = ' and '.join([f'[{key}="{value}"]' for key, value in item_attribute.items()])
         else:
-            return await self._execute_function(
-                "list_items",
-                None,
-                lambda selector: self.page.locator(selector).all()
-            )
-            
-        return [TLocator(element) for element in elements]
+            attribute_selector = ' and '.join([f'[{key}~="{value}"]' for key, value in item_attribute.items()])
+
+        # TODO: add key_only and value_only match modes
+
+        elements = await self.locator(f"*{attribute_selector}").all()
+        print("elements type", type(elements[0]))
+        return elements
 
     async def get_list_by_wrapper(
-        wrapper_selector: str = None,
-        wrapper_attribute: {} = None,
-    ):
+        self,
+        wrapper_selector: Optional[str] = None,
+        wrapper_attribute: Optional[dict] = None,
+        match_mode: str = 'contains'
+    ) -> List[TLocator]:
         """
-        Get list of items by wrapper selector or attribute.
+        Get list of items that are children of wrapper elements.
+        
+        Args:
+            wrapper_selector: CSS/XPath selector for wrapper elements
+            wrapper_attribute: Dictionary of attributes to match wrapper elements
+            child_selector: Selector for child elements (defaults to all children)
+            match_mode: How to match attributes ('exact' or 'contains')
+            
+        Returns:
+            List of TLocator objects representing the child elements
+            
+        Raises:
+            ValueError: If neither wrapper_selector nor wrapper_attribute is provided 
+                      when AI assistance is not enabled
         """
-        if wrapper_selector and wrapper_attribute:
-            raise ValueError("Cannot provide both wrapper_selector and wrapper_attribute")
-        raise NotImplementedError("Not implemented")
+        allowed_match_modes = ('exact', 'contains')
 
+        wrappers = await self.get_list_by_item(
+            item_selector=wrapper_selector,
+            item_attribute=wrapper_attribute,
+            match_mode=match_mode
+        )
+
+        print("wrapper type", type(wrappers[0]))
+
+        all_children = []
+        for wrapper in wrappers:
+            children = await wrapper.locator(':scope > *').all()
+            all_children.extend(children)
+        
+        print("child type", type(all_children[0]))
+
+        return all_children
 
     async def paginate(
 		prompt: str = None,
 	):
         """
-        Similar to above. If conventional selector/attributegiven, operate as playwright would, otherwise
+        Similar to above. If conventional selector/attribute given, operate as playwright would, otherwise
         try to AI this.
         """
             
@@ -155,11 +227,11 @@ class TPage:
 
     async def wait_for_network_idle(self, timeout: int = 5000):
         """Wait for network connections to be idle"""
-        await self.page.wait_for_load_state('networkidle', timeout=timeout)
+        await self.wait_for_load_state('networkidle', timeout=timeout)
 
     async def scroll_to_bottom(self, timeout: int = 5000):
         """Scroll to the bottom of the page"""
-        await self.page.evaluate('window.scrollTo(0, document.body.scrollHeight)')
+        await self.evaluate('window.scrollTo(0, document.body.scrollHeight)')
         await self.wait_for_network_idle(timeout)
 
     @property
@@ -169,15 +241,42 @@ class TPage:
 
     def __getattr__(self, name: str):
         """Delegate any undefined attributes/methods to the underlying page object"""
-        output = getattr(self.page, name)
-
-        # TODO: add locator list conversion
-
+        output = getattr(self._page, name)
+        
+        # If it's a method, wrap the return value after calling
+        if callable(output):
+            if iscoroutinefunction(output):
+                async def wrapped(*args, **kwargs):
+                    result = await output(*args, **kwargs)
+                    if isinstance(result, Locator):
+                        return TLocator(result)
+                    elif isinstance(result, Page):
+                        return TPage(result)
+                    elif isinstance(result, (list, tuple, set, dict)):
+                        return wrap_collection(result)
+                    return result
+                return wrapped
+            else:
+                def wrapped(*args, **kwargs):
+                    result = output(*args, **kwargs)
+                    if isinstance(result, Locator):
+                        return TLocator(result)
+                    elif isinstance(result, Page):
+                        return TPage(result)
+                    elif isinstance(result, (list, tuple, set, dict)):
+                        return wrap_collection(result)
+                    return result
+                return wrapped
+        
+        # Handle properties and other attributes
         if isinstance(output, Locator):
             return TLocator(output)
-
+        elif isinstance(output, Page):
+            return TPage(output)
+        elif isinstance(output, (list, tuple, set, dict)):
+            return wrap_collection(output)
         return output
 
     def __dir__(self) -> list:
         """Return list of available attributes, including those from the page object"""
-        return list(set(super().__dir__() + dir(self.page)))
+        return list(set(super().__dir__() + dir(self._page)))
