@@ -3,15 +3,15 @@ from typing import Any, Dict, Optional
 
 # TODO: improve this
 
-class BaseFunction(ABC):
+class BaseTool(ABC):
     """
-    Abstract base class for all functions that process content using LLM interactions.
-    Functions can perform tasks like structure recognition, pagination detection, etc.
+    Abstract base class for all tools that process content using LLM interactions.
+    Tools can perform tasks like structure recognition, pagination detection, etc.
     """
 
     def __init__(self, model_config: Optional[Dict[str, Any]] = None):
         """
-        Initialize the base function.
+        Initialize the base tool.
 
         Args:
             model_config: Optional configuration for the LLM model being used
