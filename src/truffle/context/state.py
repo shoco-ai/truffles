@@ -1,7 +1,7 @@
 from contextvars import ContextVar
 from typing import Optional
 from threading import Lock
-from .base import ContextStore
+from .base import ContextStore, Marker
 from .exceptions import ContextError
 
 _store_context: ContextVar[Optional[ContextStore]] = ContextVar('store', default=None)
@@ -33,19 +33,19 @@ class ContextManager:
         return repo
     
     @classmethod
-    async def get_marker(cls, page_hash: str, action_name: str) -> Optional[str]:
+    async def get_marker(cls, page_state: str, action_name: str) -> Optional[Marker]:
         """Get selector from current store"""
-        return await cls.get_store().get_selector(page_hash, action_name)
+        return await cls.get_store().get_marker(page_state, action_name)
     
     @classmethod
-    async def store_marker(cls, page_hash: str, action_name: str, selector: str) -> None:
+    async def store_marker(cls, page_state: str, action_name: str, marker: Marker) -> None:
         """Store selector in current store"""
-        await cls.get_store().store_selector(page_hash, action_name, selector)
+        await cls.get_store().store_marker(page_state, action_name, marker)
     
     @classmethod
-    async def remove_marker(cls, page_hash: str, action_name: str) -> None:
-        """Remove selector from current store"""
-        await cls.get_store().remove_selector(page_hash, action_name)
+    async def remove_marker(cls, page_state: str, action_name: str, marker: Marker) -> None:
+        """Remove selector from current store if it matches the provided marker"""
+        await cls.get_store().remove_marker(page_state, action_name, marker)
     
     @classmethod
     def reset(cls) -> None:
