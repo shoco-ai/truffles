@@ -10,20 +10,20 @@ class ItemStrategy(ListDetectionStrategy):
             '[role="listitem"]',  # ARIA listitem role
             '.item', '.list-item',  # Common item class names
             '[class*="item"]',  # Classes containing "item"
-            'div[class]:has(+ div[class]:nth-of-type(2))'  # Repeated similar divs
+            'article',
         ]
-        
+
+        all_candidate_lists = []
         for selector in item_selectors:
             try:
                 items = await page.locator(selector).all()
-                if len(items) > 1:  # Must have at least 2 items to be considered a list
+                if items:  # Must have at least 2 items to be considered a list
                     # Verify items have similar structure
-                    if await self._verify_similar_structure(items):
-                        return items
+                    all_candidate_lists.append(items)
             except:
                 continue
                 
-        return None
+        return all_candidate_lists
     
     async def _verify_similar_structure(self, items: List[Locator]) -> bool:
         try:
