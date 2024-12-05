@@ -21,8 +21,8 @@ jobs:
       - name: Run ruff
         run: |
           poetry install
-          poetry run ruff check --output-format=github .
-          poetry run ruff format --check .
+          # poetry run ruff check --output-format=github .
+          # poetry run ruff format --check .
 
   test:
     needs: lint

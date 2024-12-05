@@ -70,6 +70,7 @@ legacy_tox_ini = """
 
     [testenv]
     description = run tests in current env
+    allowlist_externals = poetry
     commands_pre = poetry install --only main,test
     commands = poetry run pytest
 """
