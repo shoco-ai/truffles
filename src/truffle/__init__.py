@@ -1,7 +1,5 @@
-from playwright.async_api import Page
+from playwright.async_api import Page, Browser
 from .t_page import TPage
-from playwright.async_api import Browser
 
-async def wrap(browser: Browser):
-    page = await browser.new_page()
+async def wrap(page: Page):
     return TPage(page)
