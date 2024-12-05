@@ -1,8 +1,12 @@
-name: CI
+name: CI - tests
 
 on:
   pull_request:
     branches: [ main ]
+    paths:
+      - "pyproject.toml"
+      - ".github/workflows/ci-tests.yml"
+      - "**/*.py"
 
 jobs:
   lint:
