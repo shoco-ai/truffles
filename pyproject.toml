@@ -9,6 +9,9 @@ packages = [{include = "truffle", from = "src"}]
 [tool.poetry.dependencies]
 python = "^3.12"
 playwright = "^1.49.0"
+langchain-core = "^0.3.21"
+langchain = "^0.3.9"
+langchain-anthropic = "^0.3.0"
 
 
 [tool.poetry.group.dev.dependencies]
