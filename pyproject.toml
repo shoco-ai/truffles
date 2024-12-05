@@ -2,7 +2,7 @@
 name = "truffles"
 version = "0.1.0"
 description = "Tools for data extraction from the web with AI"
-authors = ["carlos@shoco.ai", "david@shoco.ai"]
+authors = ["Shoco Team <truffles@shoco.ai>"]
 readme = "README.md"
 packages = [{include = "truffles", from = "src"}]
 
