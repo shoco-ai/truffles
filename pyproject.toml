@@ -21,6 +21,13 @@ beautifulsoup4 = "4.12.3"
 jupyter = "^1.1.1"
 ipykernel = "^6.29.5"
 notebook = "^7.2.2"
+ruff = "^0.8.2"
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.4"
+tox = "^4.23.2"
+pytest-asyncio = "^0.24.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -47,3 +54,22 @@ ignore = ["D100"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+filterwarnings = [
+    "error",
+    # Add any warnings to ignore here, e.g.:
+    # "ignore::DeprecationWarning:pkg.*"
+]
+
+[tool.tox]
+legacy_tox_ini = """
+    [tox]
+    min_version = 4.0
+
+    [testenv]
+    description = run tests in current env
+    commands_pre = poetry install --only main,test
+    commands = poetry run pytest
+"""
