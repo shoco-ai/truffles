@@ -1,1 +1,1 @@
-from .list_detector import ListDetector, DetectionMode
+from .list_detector import ListDetector

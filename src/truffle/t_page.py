@@ -3,7 +3,7 @@ from typing import List, Optional, Any, Callable
 from .context import ContextManager
 import asyncio
 from .t_locator import TLocator
-from .tools.list_detector import ListDetector, DetectionMode
+from .tools.list_detector import ListDetector
 from .context.state import ContextManager
 from inspect import iscoroutinefunction
 
