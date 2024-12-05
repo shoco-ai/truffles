@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/shoco-team/release-please-playground/compare/truffle-v0.1.0...truffle-v0.1.1) (2024-12-05)
+
+
+### Bug Fixes
+
+* add outputs to release-please job ([5c6e218](https://github.com/shoco-team/release-please-playground/commit/5c6e2189a54fe39d44ee407abe1e001079196623))
+
 ## [0.1.0](https://github.com/shoco-team/release-please-playground/compare/truffle-v0.1.0...truffle-v0.1.0) (2024-12-05)
 
 
