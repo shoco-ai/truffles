@@ -24,3 +24,25 @@ notebook = "^7.2.2"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 120
+exclude = [
+    ".git",
+    ".tox",
+    ".venv",
+    "build",
+    "dist",
+    "venv",
+    ".venv"
+]
+
+[tool.ruff.lint]
+# FIXME: add "D"
+extend-select = ["I"]
+ignore = ["D100"]
+
+[tool.ruff.format]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
