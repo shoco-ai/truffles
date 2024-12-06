@@ -11,10 +11,6 @@ from ...context.state import ContextManager
 from ...context.marker import SimpleMarker
 from .strategies.llm_strategy import LLMStrategy
 
-class DetectionStrategy(Enum):
-    BASIC = "basic"          # Uses BeautifulSoup parsing and common patterns
-    STATISTICAL = "statistical"  # Uses frequency analysis and structural patterns
-    LLM = "llm"                # Uses LLM-based detection
 
 class ListDetector(BaseTool):
     """
@@ -29,9 +25,14 @@ class ListDetector(BaseTool):
     async def execute(
         self,
         page: Page,
-        strategy: DetectionStrategy = DetectionStrategy.LLM,
+        strategy: str = "llm",
         **kwargs
     ) -> Optional[List[Locator]]:
+
+        detection_strategies = ["basic", "statistical", "llm"]
+        if strategy not in detection_strategies:
+            raise ValueError(f"Invalid strategy '{strategy}'. Must be one of: {detection_strategies}")
+        
         # Get page content and create soup
         
         # Try to get cached result first
@@ -45,28 +46,24 @@ class ListDetector(BaseTool):
                 return items
         
         # Detect lists using requested strategy
-        items = await self._detect_lists(page, strategy)
-        if not items:
+        marker = await self._detect_lists(page, strategy)
+        if not marker:
             return None
-            
-        # Cache successful result
-        # TODO: fix selectors!!!
-        selector = await self._create_selector(items[0])
-        marker = SimpleMarker(selector=selector)
+
         await ContextManager.store_marker(
-            page_hash=page_hash,
+            page_state=page_state,
             action_name="list_detection",
             marker=marker
         )
         
-        return items
+        return marker
         
     async def _detect_lists(
         self,
         page: Page,
-        strategy: DetectionStrategy
+        strategy: str,
     ) -> Optional[List[Locator]]:
-        if strategy == DetectionStrategy.LLM:
+        if strategy == "llm":
             llm_strategy = LLMStrategy()
             return await llm_strategy.detect(page)
         else:

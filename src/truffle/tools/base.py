@@ -32,38 +32,6 @@ class BaseTool(ABC):
         """
         pass
 
-    @abstractmethod
-    def get_prompt(self) -> str:
-        """
-        Get the prompt template for the LLM interaction.
-
-        Returns:
-            The prompt template string
-        """
-        pass
-
-    @property
-    @abstractmethod
-    def name(self) -> str:
-        """
-        Get the name of the function.
-
-        Returns:
-            The function name
-        """
-        pass
-
-    async def validate_result(self, result: Any) -> bool:
-        """
-        Validate the result of the function execution.
-
-        Args:
-            result: The result to validate
-
-        Returns:
-            True if the result is valid, False otherwise
-        """
-        return True
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}(name={self.name})"

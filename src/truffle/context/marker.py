@@ -46,27 +46,29 @@ class SimpleMarker(Marker):
 @dataclass
 class AttributeMarker(Marker):
     """Marker that uses attribute matching"""
-    attributes: Dict[str, str]
+    attribute_dict: Dict[str, str]
     match_mode: str = "contains"  # can be "exact" or "contains"
     
     def to_dict(self) -> Dict:
         return {
             "type": "attribute",
-            "attributes": self.attributes,
+            "attribute_dict": self.attribute_dict,
             "match_mode": self.match_mode
         }
     
     @classmethod
     def from_dict(cls, data: Dict) -> 'AttributeMarker':
         return cls(
-            attributes=data["attributes"],
+            attribute_dict=data["attribute_dict"],
             match_mode=data["match_mode"]
         )
     
     def get_selector(self) -> str:
         if self.match_mode == "exact":
-            return ' and '.join([f'[{key}="{value}"]' for key, value in self.attributes.items()])
+            return ' and '.join([f'[{key}="{value}"]' for key, value in self.attribute_dict.items()])
         elif self.match_mode == "contains":
-            return ' and '.join([f'[{key}~="{value}"]' for key, value in self.attributes.items()])
+            return ' and '.join([f'[{key}~="{value}"]' for key, value in self.attribute_dict.items()])
+        elif self.match_mode == "value_only":
+            return f'[*~="{self.attribute_dict[list(self.attribute_dict.keys())[0]]}"]' # TODO: better way?
         else:
             raise ValueError(f"Invalid match mode: {self.match_mode}")
