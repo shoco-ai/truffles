@@ -4,6 +4,7 @@ A python framework that extends [playwright](https://playwright.dev/) with langu
 > **Note:** Currently only supported with async playwright.
 
 <div align="center">
+
 | | |
 | --- | --- |
 | CI/CD | [![ci/tests](https://github.com/shoco-team/truffle/actions/workflows/ci-tests.yml/badge.svg)](https://github.com/shoco-team/truffle/actions/workflows/ci-tests.yml) [![cd/release](https://github.com/shoco-team/truffle/actions/workflows/release-please.yml/badge.svg)](https://github.com/shoco-team/truffle/actions/workflows/release-please.yml) |
