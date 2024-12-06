@@ -73,7 +73,7 @@ class TPage:
 
     async def get_main_list(
         self,
-        detection_mode: str = "dynamic",
+        detection_mode: str = "llm",
         force_detect: bool = False
     ) -> List[TLocator]:
         """
@@ -99,22 +99,13 @@ class TPage:
                 if items:
                     return [TLocator(item) for item in items]
         
-        # Convert string mode to enum
-        try:
-            mode = DetectionMode(detection_mode.lower())
-        except ValueError:
-            raise ValueError(
-                f"Invalid detection mode: {detection_mode}. "
-                f"Must be one of: {[m.value for m in DetectionMode]}"
-            )
         
-        # Perform detection
-        raise NotImplementedError("List detection not implemented and self._page!!")
-        items = await self.list_detector.execute(self._page, mode=mode)
-        if not items:
-            raise Exception(
-                f"Could not detect list structure using {detection_mode} mode"
-            )
+        marker = await self.list_detector.execute(self._page, strategy=detection_mode)
+
+        if not marker:
+            return None
+        
+        items = await self.get_list_by_wrapper(wrapper_selector=marker.get_selector())
             
         return [TLocator(item) for item in items]
 
@@ -240,7 +231,7 @@ class TPage:
     def __getattr__(self, name: str):
         """Delegate any undefined attributes/methods to the underlying page object"""
         output = getattr(self._page, name)
-        
+
         # If it's a method, wrap the return value after calling
         if callable(output):
             if iscoroutinefunction(output):
