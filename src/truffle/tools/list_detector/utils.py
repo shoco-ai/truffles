@@ -98,8 +98,6 @@ def identify_list_attribute(html: str, list_element_candidates: List[str]) -> st
         if total_tags[attr] > 0:
             normalized_counts[attr] = count / total_tags[attr]
 
-    print("normalized_counts of attribute candidates:", normalized_counts)
-
     if normalized_counts:
         return max(normalized_counts, key=normalized_counts.get)
     else:
@@ -114,69 +112,28 @@ def get_attr_list(element, ignore_num=True):
     Get all attributes from an element.
     """
 
-    attribute_values = list(element.attrs.values())
-
-    attr_lst = []
-    attr_lst.append(element.name)
-
-    for value in attribute_values:
-        if ignore_num:
-            try:
-                int(value)
-                continue
-            except (ValueError, TypeError):
-                pass
-
+    tuple_list = []
+    for key, value in element.attrs.items():
         if isinstance(value, list):
-            attr_lst += value
+            tuple_list.extend((key, v) for v in value)
         else:
-            attr_lst.append(value)
+            tuple_list.append((key, value))
 
-    return attr_lst
-
-
-def get_attr_keys(element: Tag, ignore_num=True) -> List[str]:
-    """Get list of attribute keys from an element and its parents"""
-
-    attr_keys = list(element.attrs.keys())
+    tuple_list.append((element.name,))
 
     attr_lst = []
-    attr_lst.append(element.name)
-
-    for key in attr_keys:
-        if ignore_num:
-            try:
-                int(key)
-                continue
-            except (ValueError, TypeError):
-                pass
-        
-        if isinstance(key, list):
-            attr_lst += key
+    for tup in tuple_list:
+        if len(tup) == 1:
+            attr_lst.append(tup)
         else:
-            attr_lst.append(key)
+            key, value = tup
+            if ignore_num:
+                try:
+                    int(value)
+                    continue    
+                except (ValueError, TypeError):
+                    pass
 
-    return attr_lst
-
-
-def get_attr_values(element: Tag, ignore_num=True) -> List[str]:
-    """Get list of attribute values from an element and its parents"""
-    attr_values = list(element.attrs.values())
-
-    attr_lst = []
-    attr_lst.append(element.name)
-
-    for value in attr_values:
-        if ignore_num:
-            try:
-                int(value)
-                continue
-            except (ValueError, TypeError):
-                pass
-        
-        if isinstance(value, list):
-            attr_lst += value
-        else:
-            attr_lst.append(value)
+            attr_lst.append((key, value))
 
     return attr_lst
