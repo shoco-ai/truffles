@@ -1,12 +1,12 @@
-from typing import Any
+from typing import Any, Union
 from playwright.async_api import Locator
 from inspect import iscoroutinefunction
 
 from .utils.wrap import wrap_collection
 
 class TLocator:
-    def __init__(self, locator: Locator):
-        assert isinstance(locator, Locator), "locator must be a playwright Locator"
+    def __init__(self, locator: Union[Locator, 'TLocator']):
+        assert isinstance(locator, Locator) or isinstance(locator, TLocator), "locator must be a playwright Locator or TLocator"
 
         self._locator = locator
 

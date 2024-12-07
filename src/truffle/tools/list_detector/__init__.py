@@ -1,1 +1,0 @@
-from .list_detector import ListDetector

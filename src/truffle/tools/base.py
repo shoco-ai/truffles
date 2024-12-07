@@ -18,6 +18,7 @@ class BaseTool(ABC):
         """
         self.model_config = model_config or {}
 
+
     @abstractmethod
     async def execute(self, content: Any, **kwargs) -> Any:
         """

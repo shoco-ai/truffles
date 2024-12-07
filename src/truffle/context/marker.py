@@ -68,7 +68,5 @@ class AttributeMarker(Marker):
             return ' and '.join([f'[{key}="{value}"]' for key, value in self.attribute_dict.items()])
         elif self.match_mode == "contains":
             return ' and '.join([f'[{key}~="{value}"]' for key, value in self.attribute_dict.items()])
-        elif self.match_mode == "value_only":
-            return f'[*~="{self.attribute_dict[list(self.attribute_dict.keys())[0]]}"]' # TODO: better way?
         else:
             raise ValueError(f"Invalid match mode: {self.match_mode}")
