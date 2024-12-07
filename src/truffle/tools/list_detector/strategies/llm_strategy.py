@@ -15,8 +15,6 @@ from ..utils import (
     find_lowest_common_ancestor, 
     get_attr_list, 
     count_tags_in_soup,
-    get_attr_keys,
-    get_attr_values,
 )
 from collections import Counter
 import os
@@ -35,7 +33,7 @@ def find_candidate_elements(soup: BeautifulSoup, identifiers: List[dict]) -> Lis
     """Find all elements matching the given identifiers"""
     candidates = []
     for identifier in identifiers:
-        elements = find_elements_with_text(soup, identifier['selector'])
+        elements = find_elements_with_text(soup, identifier.selector)
         if elements:
             candidates.extend(elements)
     return list(set(candidates))
@@ -70,7 +68,7 @@ class LLMStrategy(ListDetectionStrategy):
         # Initialize the model with structured output
         model = LLMManager.get_model().with_structured_output(
             ListDetectionOutput, 
-            include_raw=True
+            include_raw=False
         )
         model = model.with_retry(
             retry_if_exception_type=(ValueError,),
@@ -104,14 +102,15 @@ class LLMStrategy(ListDetectionStrategy):
         # Create messages for the chat model
         messages = [
             SystemMessage(
-                content=f"""
-                You are an AI model that detects list elements on a webpage and 
+                content=f"""You are an AI model that detects list elements on a webpage and 
                 outputs **always** in the correct pydantic format. If you are making up the output say so."""
             ),
             HumanMessage(content=[
-                {"type": "text", "text": "Analyze the following webpage screenshot and text and return a list of distinct list items."},
+                {
+                    "type": "text", 
+                    "text": "Analyze the following webpage screenshot and text and return a list of distinct list items."
+                },
                 # TODO: add text
-                # {"type": "text", "text": f"{(await page.text_content())[:2000]}"},
                 {
                     "type": "image_url", 
                     "image_url": {"url": image_data_url}
@@ -119,12 +118,8 @@ class LLMStrategy(ListDetectionStrategy):
             ])
         ]
 
-        response = await model.ainvoke(messages)
-        print("actual response", response["raw"].content[0]["input"])
-        try:
-            return response["raw"].content[0]["input"]
-        except:
-            return None
+        response = await model.ainvoke(messages) # for debugging set `include_raw = True`
+        return response
 
     async def _string_to_wrap_selectors(
         self, 
@@ -143,8 +138,7 @@ class LLMStrategy(ListDetectionStrategy):
             
             # Analyze common ancestors and get attributes
             # TODO: This is a bit of a hack, implement a better way
-            attr_extractor = get_attr_keys if use_attr_keys else get_attr_values
-            possible_attrs = analyze_common_ancestors(element_candidates, attr_extractor)
+            possible_attrs = analyze_common_ancestors(element_candidates, get_attr_list)
             
             # Count and normalize attributes
             attr_counts = Counter(possible_attrs)
@@ -157,26 +151,27 @@ class LLMStrategy(ListDetectionStrategy):
 
     async def detect(self, page: Page) -> Optional[List[Locator]]:
 
-        t1 = time.time()
         string_candidates = await self._get_candidates(page)
-        print("time to get candidates", time.time() - t1)
 
-        t1 = time.time()
         wrapper_value_candidates = await self._string_to_wrap_selectors(
             page, 
-            string_candidates["items"],
+            string_candidates.items,
             use_attr_keys=False
         )
-        print("time to get wrapper value candidates", time.time() - t1)
+
+        if not wrapper_value_candidates:
+            return None
 
         best_wrapper_attribute = max(
             wrapper_value_candidates, 
             key=wrapper_value_candidates.get
         )
 
-        marker = AttributeMarker(   
-            attribute_dict={"value": best_wrapper_attribute},
-            match_mode="value_only"
+        marker = AttributeMarker(
+            attribute_dict={
+                best_wrapper_attribute[0]: best_wrapper_attribute[1]
+            },
+            match_mode="contains"
         )
 
         return marker
