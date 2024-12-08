@@ -1,47 +1,32 @@
-I'll revise the README to be more professional and factual while still highlighting the key capabilities. Here's a more measured version:
-
-# Truffle
-An open-source framework that extends Playwright with AI capabilities for web automation and data extraction. Truffle implements global caching of AI interactions to improve efficiency across the community.
+# truffles 🍪
+A python framework that extends [playwright](https://playwright.dev/) with AI tools for web automation and data extraction.
 
 ```python
-from truffle import wrap
-async def extract_products():
-    page = await wrap(browser)  # Wraps any Playwright browser
-    await page.goto("https://example.com/products")
-    # AI-assisted automation with community caching
-    products = await page.get_main_list()
-    # Standard Playwright syntax with AI capabilities
-    for product in products:
-        title = await product.get_text("h2")
-        price = await product.get_text("[data-price]")
+page = truffle.wrap(browser)
+page.goto("https://example.com/products")
+
+items = await page.get_main_list() # auto list detection
+
+products = await items.to_structure({"title": str, "price": float}) # structure from locator
 ```
 
-## Core Features
+## Features
 
-### Open Source Architecture
-- Full source code access, including AI prompts and caching implementation
-- Community-driven development and feature roadmap
-- Self-hosted deployment options
+### Implemented Tools
+The repo contains a few tools that implement common patterns for web automation, that are powered by LLMs and have been proven to work well in the wild.
+- List Detector
+- Page Navigation
+- Data Extraction
 
-### Distributed Intelligence
-- Shared cache of successful automation patterns
-- Community-wide prompt optimization
-- Reduced API costs through cached interactions
+### Context Manager
+The context manager is internally used by tools to store and retrieve reusable context in automations. This greatly reduces the amount of LLM calls required.
 
-### Playwright Integration
-- Compatible with existing Playwright projects
-- Maintains standard Playwright API patterns
-- Combines deterministic and AI-based automation approaches
 
-## Technical Capabilities
+### Tool Extensibility
+The framework is designed to be easily extensible. You can implement your own tools by inheriting from the base classes.
 
-### AI-Assisted Automation Tools
-- Pattern recognition for list structures
-- Automated navigation and pagination
-- Context-aware element selection
-- Backed by community-maintained interaction cache
 
-### Implementation Details
+## Technical Details
 - Built on Playwright's production-tested foundation
 - Asynchronous architecture
 - Configurable caching backend
@@ -54,5 +39,4 @@ Current development focuses on:
 - Improving documentation
 - Adding usage examples
 
-## Contributing
-See our issues page for current development priorities or contact the team to discuss contributions.
+
