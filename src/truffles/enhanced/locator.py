@@ -1,5 +1,7 @@
 from typing import Any, Union
+
 from playwright.async_api import Locator
+
 from ..core.enhanced import Enhanced
 from ..utils.wrap import wrap_collection
 

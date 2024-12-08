@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import Dict
 from dataclasses import dataclass
+from typing import Dict
 
 
 class Marker(ABC):
@@ -64,12 +64,8 @@ class AttributeMarker(Marker):
 
     def get_selector(self) -> str:
         if self.match_mode == "exact":
-            return " and ".join(
-                [f'[{key}="{value}"]' for key, value in self.attribute_dict.items()]
-            )
+            return " and ".join([f'[{key}="{value}"]' for key, value in self.attribute_dict.items()])
         elif self.match_mode == "contains":
-            return " and ".join(
-                [f'[{key}~="{value}"]' for key, value in self.attribute_dict.items()]
-            )
+            return " and ".join([f'[{key}~="{value}"]' for key, value in self.attribute_dict.items()])
         else:
             raise ValueError(f"Invalid match mode: {self.match_mode}")

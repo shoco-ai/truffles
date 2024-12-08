@@ -1,7 +1,7 @@
 import hashlib
-
-from typing import Optional
 from abc import ABC, abstractmethod
+from typing import Optional
+
 from .marker import Marker
 
 
@@ -19,15 +19,11 @@ class ContextStore(ABC):
         pass
 
     @abstractmethod
-    async def store_marker(
-        self, page_state: str, action_name: str, marker: Marker
-    ) -> None:
+    async def store_marker(self, page_state: str, action_name: str, marker: Marker) -> None:
         """Store selector for a given page hash and action"""
         pass
 
     @abstractmethod
-    async def remove_marker(
-        self, page_state: str, action_name: str, marker: Marker
-    ) -> None:
+    async def remove_marker(self, page_state: str, action_name: str, marker: Marker) -> None:
         """Remove selector for a given page hash and action if it matches the provided marker"""
         pass

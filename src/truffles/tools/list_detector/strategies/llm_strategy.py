@@ -1,23 +1,25 @@
-from typing import Optional, List, Tuple, Callable, Dict
-from pydantic import BaseModel, Field
-from playwright.async_api import Page, Locator
-from langchain_core.messages import HumanMessage, SystemMessage
-from truffles.models.config import LLMManager
-from .base import ListDetectionStrategy
 import base64
-from PIL import Image
 import io
+import os
+from collections import Counter
+from typing import Callable, Dict, List, Optional, Tuple
+
 from bs4 import BeautifulSoup, Tag
+from langchain_core.messages import HumanMessage, SystemMessage
+from PIL import Image
+from playwright.async_api import Locator, Page
+from pydantic import BaseModel, Field
+
+from truffles.context import AttributeMarker
+from truffles.models.config import LLMManager
+
 from ..utils import (
+    count_tags_in_soup,
     find_elements_with_text,
     find_lowest_common_ancestor,
     get_attr_list,
-    count_tags_in_soup,
 )
-from collections import Counter
-import os
-
-from truffles.context import AttributeMarker
+from .base import ListDetectionStrategy
 
 
 class DetectionOutput(BaseModel):
@@ -28,14 +30,10 @@ class DetectionOutput(BaseModel):
 
 
 class ListDetectionOutput(BaseModel):
-    items: List[
-        DetectionOutput
-    ]  # = Field(description="A list of detected items (this wraps the output)")
+    items: List[DetectionOutput]  # = Field(description="A list of detected items (this wraps the output)")
 
 
-def find_candidate_elements(
-    soup: BeautifulSoup, identifiers: List[dict]
-) -> List[Tuple[Tag, str]]:
+def find_candidate_elements(soup: BeautifulSoup, identifiers: List[dict]) -> List[Tuple[Tag, str]]:
     """Find all elements matching the given identifiers"""
     candidates = []
     for identifier in identifiers:
@@ -45,9 +43,7 @@ def find_candidate_elements(
     return list(set(candidates))
 
 
-def analyze_common_ancestors(
-    element_candidates: List[Tuple[Tag, str]], attr_extractor: Callable
-) -> List[str]:
+def analyze_common_ancestors(element_candidates: List[Tuple[Tag, str]], attr_extractor: Callable) -> List[str]:
     """Analyze common ancestors of candidate elements and extract attributes"""
     attrs = []
     for el1, _ in element_candidates:
@@ -58,9 +54,7 @@ def analyze_common_ancestors(
     return attrs
 
 
-def calculate_normalized_counts(
-    attr_counts: Counter, total_tags: Counter
-) -> Dict[str, float]:
+def calculate_normalized_counts(attr_counts: Counter, total_tags: Counter) -> Dict[str, float]:
     """Calculate normalized counts for attributes"""
     normalized_counts = {}
     for attr, count in attr_counts.items():
@@ -78,9 +72,7 @@ class LLMStrategy(ListDetectionStrategy):
         """AI-powered detection using LLM"""
 
         # Initialize the model with structured output
-        model = LLMManager.get_model().with_structured_output(
-            ListDetectionOutput, include_raw=False
-        )
+        model = LLMManager.get_model().with_structured_output(ListDetectionOutput, include_raw=False)
         model = model.with_retry(
             retry_if_exception_type=(ValueError,),
             stop_after_attempt=2,
@@ -88,9 +80,7 @@ class LLMStrategy(ListDetectionStrategy):
         )
 
         # Take a screenshot of the full page
-        screenshot_bytes = await page.screenshot(
-            full_page=True
-        )  # Add logging to confirm save
+        screenshot_bytes = await page.screenshot(full_page=True)  # Add logging to confirm save
 
         # Crop the image to keep upper left corner within 8000x8000
         with Image.open(io.BytesIO(screenshot_bytes)) as img:
@@ -130,9 +120,7 @@ class LLMStrategy(ListDetectionStrategy):
             ),
         ]
 
-        response = await model.ainvoke(
-            messages
-        )  # for debugging set `include_raw = True`
+        response = await model.ainvoke(messages)  # for debugging set `include_raw = True`
         return response
 
     async def _string_to_wrap_selectors(
@@ -143,9 +131,7 @@ class LLMStrategy(ListDetectionStrategy):
     ) -> List[Locator]:
         """Get list candidates from a string of HTML"""
 
-        soup_list = [
-            BeautifulSoup(await fr.content(), "html.parser") for fr in page.frames
-        ]
+        soup_list = [BeautifulSoup(await fr.content(), "html.parser") for fr in page.frames]
         overall_counts = {}
 
         for soup in soup_list:
@@ -175,9 +161,7 @@ class LLMStrategy(ListDetectionStrategy):
         if not wrapper_value_candidates:
             return None
 
-        best_wrapper_attribute = max(
-            wrapper_value_candidates, key=wrapper_value_candidates.get
-        )
+        best_wrapper_attribute = max(wrapper_value_candidates, key=wrapper_value_candidates.get)
 
         marker = AttributeMarker(
             attribute_dict={best_wrapper_attribute[0]: best_wrapper_attribute[1]},

@@ -1,5 +1,5 @@
-from typing import TYPE_CHECKING, Any
 from inspect import iscoroutinefunction
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .enhanced import Enhanced
@@ -17,9 +17,7 @@ class ToolManager:
         tools = self._enhanced.get_tools()
 
         if name not in tools:
-            raise AttributeError(
-                f"No tool named '{name}' registered for {self._enhanced.__class__.__name__}"
-            )
+            raise AttributeError(f"No tool named '{name}' registered for {self._enhanced.__class__.__name__}")
 
         if name not in self._tool_instances:
             tool_class = tools[name]

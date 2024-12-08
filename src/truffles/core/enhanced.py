@@ -1,7 +1,8 @@
-from typing import Type, TypeVar, Any, Dict
-from .tool_manager import ToolManager
-from ..tools.base import BaseTool
 from inspect import iscoroutinefunction
+from typing import Any, Dict, Type, TypeVar
+
+from ..tools.base import BaseTool
+from .tool_manager import ToolManager
 
 T = TypeVar("T", bound=BaseTool)
 

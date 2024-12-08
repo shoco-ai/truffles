@@ -1,6 +1,7 @@
-from bs4 import BeautifulSoup, Tag
 from collections import Counter
 from typing import List
+
+from bs4 import BeautifulSoup, Tag
 
 
 def find_lowest_common_ancestor(node1, node2):
@@ -52,9 +53,7 @@ def find_elements_with_text(soup: BeautifulSoup, text: str) -> List[Tag]:
     """
     output = [
         (element, id(element))
-        for element in soup.find_all(
-            string=lambda string: string and text.lower() in string.lower()
-        )
+        for element in soup.find_all(string=lambda string: string and text.lower() in string.lower())
         if element.parent.name not in ["script", "style"]
     ]
 

@@ -1,5 +1,7 @@
 from typing import List, Optional
-from playwright.async_api import Page, Locator, TimeoutError
+
+from playwright.async_api import Locator, Page, TimeoutError
+
 from .base import ListDetectionStrategy
 
 

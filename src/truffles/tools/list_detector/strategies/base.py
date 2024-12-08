@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
-from playwright.async_api import Page, Locator
+
+from playwright.async_api import Locator, Page
 
 
 class ListDetectionStrategy(ABC):

@@ -1,6 +1,7 @@
 from contextvars import ContextVar
-from typing import Optional
 from threading import Lock
+from typing import Optional
+
 from .base import ContextStore, Marker
 from .exceptions import ContextError
 
@@ -29,9 +30,7 @@ class ContextManager:
         repo = _store_context.get()
         if repo is None:
             if cls._default_store is None:
-                raise ContextError(
-                    "Context store not initialized. Call initialize() first."
-                )
+                raise ContextError("Context store not initialized. Call initialize() first.")
             repo = cls._default_store
             _store_context.set(repo)
         return repo
@@ -42,16 +41,12 @@ class ContextManager:
         return await cls.get_store().get_marker(page_state, action_name)
 
     @classmethod
-    async def store_marker(
-        cls, page_state: str, action_name: str, marker: Marker
-    ) -> None:
+    async def store_marker(cls, page_state: str, action_name: str, marker: Marker) -> None:
         """Store selector in current store"""
         await cls.get_store().store_marker(page_state, action_name, marker)
 
     @classmethod
-    async def remove_marker(
-        cls, page_state: str, action_name: str, marker: Marker
-    ) -> None:
+    async def remove_marker(cls, page_state: str, action_name: str, marker: Marker) -> None:
         """Remove selector from current store if it matches the provided marker"""
         await cls.get_store().remove_marker(page_state, action_name, marker)
 

@@ -1,13 +1,11 @@
-from playwright.async_api import Page
-from .enhanced.page import TPage
-from .context import ContextManager, MemoryContextStore, ContextStore
-from .models import LLMManager
-
-from .tools.list_detector.list_detector import ListDetector
-
 from langchain_anthropic import ChatAnthropic
-
 from langchain_core.language_models.chat_models import BaseChatModel
+from playwright.async_api import Page
+
+from .context import ContextManager, ContextStore, MemoryContextStore
+from .enhanced.page import TPage
+from .models import LLMManager
+from .tools.list_detector.list_detector import ListDetector
 
 __all__ = ["ListDetector", "wrap"]
 
