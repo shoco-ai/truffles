@@ -2,25 +2,75 @@
 name = "truffles"
 version = "0.1.0"
 description = "Tools for data extraction from the web with AI"
-authors = ["carlos@shoco.ai", "david@shoco.ai"]
+authors = ["Shoco Team <truffles@shoco.ai>"]
 readme = "README.md"
 packages = [{include = "truffles", from = "src"}]
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.9"
 playwright = "^1.49.0"
 langchain-core = "^0.3.21"
 langchain = "^0.3.9"
 langchain-anthropic = "^0.3.0"
 langchain-openai = "^0.2.11"
 pillow = "^11.0.0"
+beautifulsoup4 = "4.12.3"
 
 
 [tool.poetry.group.dev.dependencies]
 jupyter = "^1.1.1"
 ipykernel = "^6.29.5"
 notebook = "^7.2.2"
+ruff = "^0.8.2"
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.4"
+tox = "^4.23.2"
+pytest-asyncio = "^0.24.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 120
+exclude = [
+    ".git",
+    ".tox",
+    ".venv",
+    "build",
+    "dist",
+    "venv",
+    ".venv"
+]
+
+[tool.ruff.lint]
+# FIXME: add "D"
+extend-select = ["I"]
+ignore = ["D100"]
+
+[tool.ruff.format]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+filterwarnings = [
+    "error",
+    # Add any warnings to ignore here, e.g.:
+    # "ignore::DeprecationWarning:pkg.*"
+]
+
+[tool.tox]
+legacy_tox_ini = """
+    [tox]
+    min_version = 4.0
+
+    [testenv]
+    description = run tests in current env
+    allowlist_externals = poetry
+    commands_pre = poetry install --only main,test
+    commands = poetry run pytest
+"""

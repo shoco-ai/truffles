@@ -1,0 +1,12 @@
+{
+    "release-type": "python",
+    "version-file": "src/truffle/__init__.py",
+    "extra-files": [
+        "pyproject.toml"
+    ],
+    "packages": {
+        ".": {
+            "package-name": "truffle"
+        }
+    }
+}

@@ -1,4 +1,4 @@
-from playwright.async_api import Page, Locator
+from playwright.async_api import Locator, Page
 
 
 def wrap_collection(collection):
@@ -15,11 +15,7 @@ def wrap_collection(collection):
                 else (
                     TPage(value)
                     if isinstance(value, Page)
-                    else (
-                        wrap_collection(value)
-                        if isinstance(value, (list, tuple, set, dict))
-                        else value
-                    )
+                    else (wrap_collection(value) if isinstance(value, (list, tuple, set, dict)) else value)
                 )
             )
             for key, value in collection.items()
@@ -32,11 +28,7 @@ def wrap_collection(collection):
             else (
                 TPage(item)
                 if isinstance(item, Page)
-                else (
-                    wrap_collection(item)
-                    if isinstance(item, (list, tuple, set, dict))
-                    else item
-                )
+                else (wrap_collection(item) if isinstance(item, (list, tuple, set, dict)) else item)
             )
         )
         for item in collection

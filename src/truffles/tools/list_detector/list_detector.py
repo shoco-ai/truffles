@@ -1,16 +1,16 @@
 from typing import List, Optional
-from bs4 import BeautifulSoup
-from playwright.async_api import Page, Locator
 
-from ..base import BaseTool
+from bs4 import BeautifulSoup
+from playwright.async_api import Locator, Page
+
 from ...context.state import ContextManager
-from .strategies.llm_strategy import LLMStrategy
+from ...enhanced.locator import TLocator
 
 # from ...t_page import TPage
 # from ...t_locator import TLocator
 from ...enhanced.page import TPage
-from ...enhanced.locator import TLocator
-
+from ..base import BaseTool
+from .strategies.llm_strategy import LLMStrategy
 
 ALLOWED_MATCH_MODES = ("exact", "contains")
 
@@ -68,13 +68,9 @@ class ListDetector(BaseTool):
             raise ValueError(f"match_mode must be one of: {ALLOWED_MATCH_MODES}")
 
         if match_mode == "exact":
-            attribute_selector = " and ".join(
-                [f'[{key}="{value}"]' for key, value in item_attribute.items()]
-            )
+            attribute_selector = " and ".join([f'[{key}="{value}"]' for key, value in item_attribute.items()])
         else:
-            attribute_selector = " and ".join(
-                [f'[{key}~="{value}"]' for key, value in item_attribute.items()]
-            )
+            attribute_selector = " and ".join([f'[{key}~="{value}"]' for key, value in item_attribute.items()])
 
         elements = await self.locator(f"*{attribute_selector}").all()
         return elements
@@ -115,37 +111,27 @@ class ListDetector(BaseTool):
 
         return all_children
 
-    async def execute(
-        self, strategy: str = "llm", force_detect: bool = False, **kwargs
-    ) -> Optional[List[Locator]]:
+    async def execute(self, strategy: str = "llm", force_detect: bool = False, **kwargs) -> Optional[List[Locator]]:
         # TODO: make this nice and extensible
         detection_strategies = ["basic", "statistical", "llm"]
         if strategy not in detection_strategies:
-            raise ValueError(
-                f"Invalid strategy '{strategy}'. Must be one of: {detection_strategies}"
-            )
+            raise ValueError(f"Invalid strategy '{strategy}'. Must be one of: {detection_strategies}")
 
         page_state = await self.page.evaluate("document.documentElement.outerHTML")
 
         # try to get cached result first
         if not force_detect:
-            cached_marker = await ContextManager.get_marker(
-                page_state=page_state, action_name="list_detector"
-            )
+            cached_marker = await ContextManager.get_marker(page_state=page_state, action_name="list_detector")
 
             if cached_marker:
-                return await self._get_list_by_wrapper(
-                    wrapper_selector=cached_marker.get_selector()
-                )
+                return await self._get_list_by_wrapper(wrapper_selector=cached_marker.get_selector())
 
         # Detect lists using requested strategy
         marker = await self._detect_list(strategy)
         if not marker:
             return None
 
-        await ContextManager.store_marker(
-            page_state=page_state, action_name="list_detector", marker=marker
-        )
+        await ContextManager.store_marker(page_state=page_state, action_name="list_detector", marker=marker)
 
         items = await self._get_list_by_wrapper(wrapper_selector=marker.get_selector())
 
@@ -159,9 +145,7 @@ class ListDetector(BaseTool):
             llm_strategy = LLMStrategy()
             return await llm_strategy.detect(self.page)
         else:
-            raise NotImplementedError(
-                f"Detection strategy {strategy} not implemented yet. Want to help?"
-            )
+            raise NotImplementedError(f"Detection strategy {strategy} not implemented yet. Want to help?")
 
     @property
     def name(self) -> str:

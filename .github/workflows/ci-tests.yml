@@ -1,0 +1,43 @@
+name: CI - tests
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - "pyproject.toml"
+      - ".github/workflows/ci-tests.yml"
+      - "**/*.py"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install poetry
+        run: pipx install poetry
+      - name: Run ruff
+        run: |
+          poetry install
+          poetry run ruff check --output-format=github .
+          poetry run ruff format --check .
+
+  test:
+    needs: lint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install poetry
+        run: pipx install poetry
+      - name: Install dependencies
+        run: poetry install
+      - name: Run tests
+        run: poetry run tox

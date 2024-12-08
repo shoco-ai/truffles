@@ -1,8 +1,9 @@
 import json
-from typing import Optional, Dict
+from typing import Dict, Optional
+
 from ..base import ContextStore
-from ..marker import Marker, SimpleMarker, AttributeMarker
 from ..exceptions import ContextError
+from ..marker import AttributeMarker, Marker, SimpleMarker
 
 
 class MemoryContextStore(ContextStore):
@@ -30,9 +31,7 @@ class MemoryContextStore(ContextStore):
         else:
             raise ContextError(f"Unknown marker type: {marker_type}")
 
-    async def store_marker(
-        self, page_state: str, action_name: str, marker: Marker
-    ) -> None:
+    async def store_marker(self, page_state: str, action_name: str, marker: Marker) -> None:
         """Store marker for a given page state and action"""
         page_hash = self._process_page_state(page_state)
         if page_hash not in self._store:
@@ -40,9 +39,7 @@ class MemoryContextStore(ContextStore):
 
         self._store[page_hash][action_name] = marker.to_dict()
 
-    async def remove_marker(
-        self, page_state: str, action_name: str, marker: Marker
-    ) -> None:
+    async def remove_marker(self, page_state: str, action_name: str, marker: Marker) -> None:
         """Remove marker for a given page state and action if it matches the provided marker"""
         page_hash = self._process_page_state(page_state)
         if page_hash in self._store and action_name in self._store[page_hash]:
