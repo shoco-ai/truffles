@@ -6,6 +6,7 @@ from threading import Lock
 
 _llm_context: ContextVar[Optional[BaseLanguageModel]] = ContextVar("llm", default=None)
 
+
 class LLMManager:
     _lock = Lock()
     _default_model: Optional[BaseLanguageModel] = None

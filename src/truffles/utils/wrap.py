@@ -4,8 +4,8 @@ from playwright.async_api import Page, Locator
 def wrap_collection(collection):
     """Recursively wrap nested collections containing Page or Locator objects."""
 
-    from ..t_locator import TLocator
-    from ..t_page import TPage
+    from ..enhanced.locator import TLocator
+    from ..enhanced.page import TPage
 
     if isinstance(collection, dict):
         return {
