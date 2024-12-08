@@ -7,7 +7,9 @@ from .enhanced.page import TPage
 from .models import LLMManager
 from .tools.list_detector.list_detector import ListDetector
 
-__all__ = ["ListDetector", "wrap"]
+__all__ = ["ListDetector", "wrap", "__version__"]
+
+__version__ = "0.1.0"
 
 
 async def wrap(page: Page):
