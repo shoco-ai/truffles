@@ -1,5 +1,5 @@
 # truffles 🍫
-A python framework that extends [playwright](https://playwright.dev/) with language model tools for web automation and data extraction.
+A python framework that extends [playwright](https://playwright.dev/) with language model tools (`page.tools`) for web automation and data extraction.
 
 ```python
 page = truffles.wrap(browser)
@@ -8,15 +8,15 @@ page = truffles.wrap(browser)
 page.goto("https://example.com/products")
 
 # auto list detection
-items = await page.get_main_list() 
+items = await page.tools.get_main_list()
 
 # json structure from locator
-products = await items.to_structure(
+products = await items.tools.to_structure(
     {
-        "title": str, 
+        "title": str,
         "price": float
     }
-) 
+)
 ```
 
 ## Features
@@ -31,7 +31,7 @@ Currently, the following tools are implemented or in the works:
 ### Context Manager
 The `ContextManager` is internally used by tools to store and retrieve reusable context in automations. This greatly reduces the amount of LLM calls required.
 In the future, a shared context will be publicly available to further reduce costs.
-The `ContextManager` operates mostly in the background and is automatically initialized when `truffles.astart` is called, but it can also be initialized and accessedmanually.
+The `ContextManager` operates mostly in the background and is automatically initialized when `truffles.astart` is called, but it can also be initialized and accessed manually.
 ```python
 from truffles.context import ContextManager
 
@@ -43,7 +43,7 @@ The framework is designed to be easily extensible. You can implement your own to
 ```python
 from truffles.tools import BaseTool
 
-class MyTool(BaseTool): 
+class MyTool(BaseTool):
 
     def execute(self, *args, **kwargs):
         # your code here
@@ -74,5 +74,3 @@ Current development focuses on:
 - Improving current tools
 - Adding more tools
 - Optimizing caching performance
-
-

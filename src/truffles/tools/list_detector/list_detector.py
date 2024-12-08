@@ -5,13 +5,17 @@ from playwright.async_api import Page, Locator
 from ..base import BaseTool
 from ...context.state import ContextManager
 from .strategies.llm_strategy import LLMStrategy
-from ...t_page import TPage
-from ...t_locator import TLocator
+
+# from ...t_page import TPage
+# from ...t_locator import TLocator
+from ...enhanced.page import TPage
+from ...enhanced.locator import TLocator
+
 
 ALLOWED_MATCH_MODES = ("exact", "contains")
 
 
-@TPage.register("get_main_list")
+@TPage.register_tool("get_main_list")
 class ListDetector(BaseTool):
     """
     Main list detection tool that uses AI and caching to efficiently detect lists.
