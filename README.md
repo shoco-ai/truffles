@@ -8,11 +8,13 @@ A python framework that extends [playwright](https://playwright.dev/) with langu
 | | |
 | --- | --- |
 | CI/CD | [![ci/tests](https://github.com/shoco-team/truffle/actions/workflows/ci-tests.yml/badge.svg)](https://github.com/shoco-team/truffle/actions/workflows/ci-tests.yml) [![cd/release](https://github.com/shoco-team/truffle/actions/workflows/release-please.yml/badge.svg)](https://github.com/shoco-team/truffle/actions/workflows/release-please.yml) |
-| Docs |  |
-| Package | [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/truffle.svg?logo=python&label=Python&logoColor=gold)](https://pypi.org/project/truffle/) [![PyPI - Installs](https://img.shields.io/pypi/dm/truffle.svg?color=blue&label=Installs&logo=pypi&logoColor=gold)](https://pypi.org/project/truffle/) |
 | Meta | [![Poetry](https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json)](https://python-poetry.org/) [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://docs.astral.sh/ruff/) [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit) |
 
 </div>
+
+<!-- | Docs |  | -->
+<!-- | Package | [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/truffle.svg?logo=python&label=Python&logoColor=gold)](https://pypi.org/project/truffle/) [![PyPI - Installs](https://img.shields.io/pypi/dm/truffle.svg?color=blue&label=Installs&logo=pypi&logoColor=gold)](https://pypi.org/project/truffle/) | -->
+
 
 An open-source framework that extends Playwright with AI capabilities for web automation and data extraction. Truffle implements global caching of AI interactions to improve efficiency across the community.
 
