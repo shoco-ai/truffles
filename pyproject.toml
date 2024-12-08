@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "truffle"
+name = "truffles"
 version = "0.1.0"
 description = "Tools for data extraction from the web with AI"
-authors = ["Your Name <you@example.com>"]
+authors = ["carlos@shoco.ai", "david@shoco.ai"]
 readme = "README.md"
-packages = [{include = "truffle", from = "src"}]
+packages = [{include = "truffles", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.12"

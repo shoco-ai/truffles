@@ -2,7 +2,7 @@
 A python framework that extends [playwright](https://playwright.dev/) with language model tools for web automation and data extraction.
 
 ```python
-page = truffle.wrap(browser)
+page = truffles.wrap(browser)
 page.goto("https://example.com/products")
 
 # auto list detection
@@ -31,7 +31,7 @@ The `ContextManager` is internally used by tools to store and retrieve reusable 
 In the future, a shared context will be publicly available to further reduce costs.
 The `ContextManager` operates mostly in the background, but it can be accessed directly if needed.
 ```python
-from truffle.context import ContextManager
+from truffles.context import ContextManager
 
 ContextManager.initialize()
 ```
@@ -39,7 +39,7 @@ ContextManager.initialize()
 ### Tool Extensibility
 The framework is designed to be easily extensible. You can implement your own tools by inheriting from `BaseTool` and implementing the `execute` method.
 ```python
-from truffle.tools import BaseTool
+from truffles.tools import BaseTool
 
 class MyTool(BaseTool): 
 
@@ -55,8 +55,8 @@ class MyTool(BaseTool):
 ## A more extensive setup example
 ```python
 from playwright.async_api import async_playwright
-from truffle.models import LLMManager
-from truffle.context import ContextManager, MemoryContextStore
+from truffles.models import LLMManager
+from truffles.context import ContextManager, MemoryContextStore
 
 ContextManager.initialize(MemoryContextStore())
 
@@ -66,7 +66,7 @@ LLMManager.initialize(
 
 p = await async_playwright().start()
 browser = await p.chromium.launch()
-page = truffle.wrap(browser)
+page = truffles.wrap(browser)
 ```
 
 ## Project Status

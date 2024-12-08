@@ -2,7 +2,7 @@ from typing import Optional, List, Tuple, Callable, Dict
 from pydantic import BaseModel, Field
 from playwright.async_api import Page, Locator
 from langchain_core.messages import HumanMessage, SystemMessage
-from truffle.models.config import LLMManager
+from truffles.models.config import LLMManager
 from .base import ListDetectionStrategy
 import base64
 from PIL import Image
@@ -17,7 +17,7 @@ from ..utils import (
 from collections import Counter
 import os
 
-from truffle.context import AttributeMarker
+from truffles.context import AttributeMarker
 
 
 class DetectionOutput(BaseModel):
