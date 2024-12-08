@@ -1,6 +1,8 @@
 # truffles 🍫
 A python framework that extends [playwright](https://playwright.dev/) with language model tools (`page.tools`) for web automation and data extraction.
 
+> **Note:** Currently only supported with async playwright.
+
 ```python
 page = truffles.wrap(browser)
 
@@ -19,18 +21,20 @@ products = await items.tools.to_structure(
 )
 ```
 
-## Features
+## Tools
+
+The `.tools` attribute is a namespace for all added tools, cleanly separating them from the page object.
 
 ### Implemented Tools
 The repo contains a few tools that implement common patterns for web automation, that are powered by LLMs and have been proven to work well in the wild.
 Currently, the following tools are implemented or in the works:
 - Automatic List Detection
 - Autonomous Pagination (_under development_)
-- Intelligent Data Extraction (_under development_)
+- Intelligent & Safe Data Extraction (_under development_)
 
 ### Context Manager
 The `ContextManager` is internally used by tools to store and retrieve reusable context in automations. This greatly reduces the amount of LLM calls required.
-In the future, a shared context will be publicly available to further reduce costs.
+In the future, a publicly shared context will be available as an optional feature to further reduce costs.
 The `ContextManager` operates mostly in the background and is automatically initialized when `truffles.astart` is called, but it can also be initialized and accessed manually.
 ```python
 from truffles.context import ContextManager
@@ -46,14 +50,16 @@ from truffles.tools import BaseTool
 class MyTool(BaseTool):
 
     def execute(self, *args, **kwargs):
+
         # your code here
+
         pass
 ```
 
 ## Technical Details
 - Asynchronous architecture
-- Built to extend existing playwright projects
-- Fully integrable with langchain supported models
+- Built to seamlessly extend existing playwright projects
+- Out-of-the-box support for langchain supported models
 
 ## A more extensive setup example
 ```python
@@ -63,14 +69,16 @@ import truffles
 p = await async_playwright().start()
 browser = await p.chromium.launch()
 
+# initializes the default model and context manager
 await truffles.astart()
 page = truffles.wrap(browser)
 
 # your code here
+
 ```
 
 ## Project Status
 Current development focuses on:
 - Improving current tools
-- Adding more tools
-- Optimizing caching performance
+- Extending the functionality
+- Optimizing performance of `ContextManager`
