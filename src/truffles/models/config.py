@@ -1,44 +1,46 @@
-from contextvars import ContextVar, Token
+from contextvars import ContextVar
 from typing import Optional
 from langchain_core.language_models import BaseLanguageModel
 from contextlib import asynccontextmanager
-
+from threading import Lock
 
 _llm_context: ContextVar[Optional[BaseLanguageModel]] = ContextVar("llm", default=None)
 
-
 class LLMManager:
-    _llm_context: ContextVar[Optional[BaseLanguageModel]] = ContextVar(
-        "llm", default=None
-    )
+    _lock = Lock()
+    _default_model: Optional[BaseLanguageModel] = None
 
     @classmethod
     def initialize(cls, model: BaseLanguageModel) -> None:
-        cls._llm_context.set(model)
+        """Initialize the default model"""
+        with cls._lock:
+            cls._default_model = model
+            _llm_context.set(model)
 
     @classmethod
     def get_model(cls) -> BaseLanguageModel:
-        model = cls._llm_context.get()
+        """Get the current model or default if none set"""
+        model = _llm_context.get()
         if model is None:
-            raise ValueError("LLM not initialized")
+            if cls._default_model is None:
+                raise ValueError("LLM not initialized. Call initialize() first.")
+            model = cls._default_model
+            _llm_context.set(model)
         return model
 
     @classmethod
-    def set_model(cls, model: BaseLanguageModel) -> Token:
-        """Manually set model and return token for reset"""
-        return cls._llm_context.set(model)
-
-    @classmethod
-    def reset(cls, token: Token) -> None:
-        """Reset context using token"""
-        cls._llm_context.reset(token)
+    def reset(cls) -> None:
+        """Reset the model (useful for testing)"""
+        with cls._lock:
+            cls._default_model = None
+            _llm_context.set(None)
 
     @classmethod
     @asynccontextmanager
     async def use_model(cls, model: BaseLanguageModel):
         """Temporarily use a different model within this context"""
-        token = cls.set_model(model)
+        token = _llm_context.set(model)
         try:
             yield model
         finally:
-            cls.reset(token)
+            _llm_context.reset(token)
