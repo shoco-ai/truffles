@@ -3,6 +3,7 @@ from typing import Any, Dict, Optional
 
 # TODO: improve this
 
+
 class BaseTool(ABC):
     """
     Abstract base class for all tools that process content using LLM interactions.
@@ -18,7 +19,6 @@ class BaseTool(ABC):
         """
         self.model_config = model_config or {}
 
-
     @abstractmethod
     async def execute(self, content: Any, **kwargs) -> Any:
         """
@@ -32,7 +32,6 @@ class BaseTool(ABC):
             The processed result
         """
         pass
-
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}(name={self.name})"

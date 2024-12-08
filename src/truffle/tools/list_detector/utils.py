@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup, Tag
 from collections import Counter
-from typing import List, Optional
+from typing import List
 
 
 def find_lowest_common_ancestor(node1, node2):
@@ -130,7 +130,7 @@ def get_attr_list(element, ignore_num=True):
             if ignore_num:
                 try:
                     int(value)
-                    continue    
+                    continue
                 except (ValueError, TypeError):
                     pass
 
