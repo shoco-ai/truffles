@@ -1,6 +1,5 @@
 from typing import List, Optional
 
-from bs4 import BeautifulSoup
 from playwright.async_api import Locator, Page
 
 from ...context.state import StoreManager
@@ -24,7 +23,6 @@ class ListDetector(BaseTool):
     def __init__(self, page: Page):
         super().__init__()
         self.page = page
-        self._soup: Optional[BeautifulSoup] = None
 
     async def _get_list_by_item(
         self,
