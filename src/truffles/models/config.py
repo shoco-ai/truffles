@@ -1,4 +1,4 @@
-from contextlib import asyncStoreManager
+from contextlib import asynccontextmanager
 from contextvars import ContextVar
 from threading import Lock
 from typing import Optional
@@ -38,7 +38,7 @@ class LLMManager:
             _llm_context.set(None)
 
     @classmethod
-    @asyncStoreManager
+    @asynccontextmanager
     async def use_model(cls, model: BaseLanguageModel):
         """Temporarily use a different model within this context"""
         token = _llm_context.set(model)
