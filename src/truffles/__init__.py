@@ -17,7 +17,7 @@ async def wrap(page: Page):
     return TPage(page)
 
 
-async def astart(
+async def start(
     context_store: ContextStore = MemoryContextStore(),
     model: BaseChatModel = ChatAnthropic(model="claude-3-5-sonnet-20240620"),
 ):

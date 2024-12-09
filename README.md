@@ -50,7 +50,7 @@ Currently, the following tools are implemented or in the works:
 ### Context Manager
 The `ContextManager` is internally used by tools to store and retrieve reusable context in automations. This greatly reduces the amount of LLM calls required.
 In the future, a publicly shared context will be available as an optional feature to further reduce costs.
-The `ContextManager` operates mostly in the background and is automatically initialized when `truffles.astart` is called, but it can also be initialized and accessed manually.
+The `ContextManager` operates mostly in the background and is automatically initialized when `truffles.start` is called, but it can also be initialized and accessed manually.
 ```python
 from truffles.context import ContextManager
 
@@ -85,7 +85,7 @@ p = await async_playwright().start()
 browser = await p.chromium.launch()
 
 # initializes the default model and context manager
-await truffles.astart()
+await truffles.start()
 page = truffles.wrap(browser)
 
 # your code here
