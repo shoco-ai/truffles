@@ -2,6 +2,8 @@ from typing import List, Optional
 
 from playwright.async_api import Locator, Page
 
+from truffles.utils.locator_ops import combine_locator_list
+
 from ...context.state import StoreManager
 from ...enhanced.locator import TLocator
 
@@ -70,7 +72,7 @@ class ListDetector(BaseTool):
         else:
             attribute_selector = " and ".join([f'[{key}~="{value}"]' for key, value in item_attribute.items()])
 
-        elements = await self.locator(f"*{attribute_selector}").all()
+        elements = await self.locator(f"*{attribute_selector}")
         return elements
 
     async def _get_list_by_wrapper(
@@ -107,7 +109,7 @@ class ListDetector(BaseTool):
             children = await wrapper.locator(":scope > *").all()
             all_children.extend(children)
 
-        return all_children
+        return combine_locator_list(all_children)
 
     async def execute(self, strategy: str = "llm", force_detect: bool = False, **kwargs) -> Optional[List[Locator]]:
         # TODO: make this nice and extensible
@@ -131,9 +133,9 @@ class ListDetector(BaseTool):
 
         await StoreManager.store_marker(page_state=page_state, action_name="list_detector", marker=marker)
 
-        items = await self._get_list_by_wrapper(wrapper_selector=marker.get_selector())
+        items_locator = await self._get_list_by_wrapper(wrapper_selector=marker.get_selector())
 
-        return [TLocator(item) for item in items]
+        return items_locator
 
     async def _detect_list(
         self,
