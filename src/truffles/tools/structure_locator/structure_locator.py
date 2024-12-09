@@ -1,3 +1,4 @@
+import asyncio
 from typing import Dict
 
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -10,6 +11,8 @@ from truffles.models.config import LLMManager
 from ..base import BaseTool
 
 MAX_CHAR_LEN = 100000
+
+BATCH_SIZE = 20
 
 
 @TLocator.register_tool("to_structure")
@@ -62,18 +65,20 @@ class LocatorToDictTool(BaseTool):
         self,
         structure: BaseModel,
         per_element: bool = True,
-        # automatic_filter: bool = True,  # TODO: add this in different pattern?
     ) -> Dict:
         """Convert the locator content to a dictionary"""
 
         if per_element:
             elements = await self.locator.all()
             if len(elements) > 1:
-                structure = []
-                for element in elements:
-                    element_structure = await self._exec_impl(element, structure)
-                    structure.append(element_structure)
+                # Process in smaller batches to avoid timeout issues
+                results = []
+                for i in range(0, len(elements), BATCH_SIZE):
+                    batch = elements[i : i + BATCH_SIZE]
+                    tasks = [self._exec_impl(elem, structure) for elem in batch]
+                    batch_results = await asyncio.gather(*tasks)
+                    results.extend(batch_results)
 
-                return structure
+                return results
 
         return await self._exec_impl(self.locator, structure)
