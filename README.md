@@ -48,13 +48,13 @@ Currently, the following tools are implemented or in the works:
 - Intelligent & Safe Data Extraction (_under development_)
 
 ### Context Manager
-The `ContextManager` is internally used by tools to store and retrieve reusable context in automations. This greatly reduces the amount of LLM calls required.
+The `StoreManager` is internally used by tools to store and retrieve reusable context in automations. This greatly reduces the amount of LLM calls required.
 In the future, a publicly shared context will be available as an optional feature to further reduce costs.
-The `ContextManager` operates mostly in the background and is automatically initialized when `truffles.start` is called, but it can also be initialized and accessed manually.
+The `StoreManager` operates mostly in the background and is automatically initialized when `truffles.start` is called, but it can also be initialized and accessed manually.
 ```python
-from truffles.context import ContextManager
+from truffles.context import StoreManager
 
-ContextManager.initialize()
+StoreManager.initialize()
 ```
 
 ### Tool Extensibility
@@ -96,4 +96,4 @@ page = truffles.wrap(browser)
 Current development focuses on:
 - Improving current tools
 - Extending the functionality
-- Optimizing performance of `ContextManager`
+- Optimizing performance of `StoreManager`

@@ -3,7 +3,7 @@ from typing import List, Optional
 from bs4 import BeautifulSoup
 from playwright.async_api import Locator, Page
 
-from ...context.state import ContextManager
+from ...context.state import StoreManager
 from ...enhanced.locator import TLocator
 
 # from ...t_page import TPage
@@ -121,7 +121,7 @@ class ListDetector(BaseTool):
 
         # try to get cached result first
         if not force_detect:
-            cached_marker = await ContextManager.get_marker(page_state=page_state, action_name="list_detector")
+            cached_marker = await StoreManager.get_marker(page_state=page_state, action_name="list_detector")
 
             if cached_marker:
                 return await self._get_list_by_wrapper(wrapper_selector=cached_marker.get_selector())
@@ -131,7 +131,7 @@ class ListDetector(BaseTool):
         if not marker:
             return None
 
-        await ContextManager.store_marker(page_state=page_state, action_name="list_detector", marker=marker)
+        await StoreManager.store_marker(page_state=page_state, action_name="list_detector", marker=marker)
 
         items = await self._get_list_by_wrapper(wrapper_selector=marker.get_selector())
 

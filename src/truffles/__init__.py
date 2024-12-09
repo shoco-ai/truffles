@@ -2,7 +2,7 @@ from langchain_anthropic import ChatAnthropic
 from langchain_core.language_models.chat_models import BaseChatModel
 from playwright.async_api import Page
 
-from .context import ContextManager, ContextStore, MemoryContextStore
+from .context import ContextStore, MemoryContextStore, StoreManager
 from .enhanced.page import TPage
 from .models import LLMManager
 from .tools.list_detector.list_detector import ListDetector
@@ -22,7 +22,7 @@ async def start(
     model: BaseChatModel = ChatAnthropic(model="claude-3-5-sonnet-20240620"),
 ):
     """Initialize the context manager and LLM manager."""
-    ContextManager.initialize(context_store)
+    StoreManager.initialize(context_store)
     LLMManager.initialize(model)
 
     return

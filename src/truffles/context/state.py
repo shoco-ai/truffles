@@ -8,7 +8,7 @@ from .exceptions import ContextError
 _store_context: ContextVar[Optional[ContextStore]] = ContextVar("store", default=None)
 
 
-class ContextManager:
+class StoreManager:
     """
     Thread and task-safe context manager for store access.
     Uses contextvars for task isolation and threading.Lock for thread safety.
