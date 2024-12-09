@@ -24,30 +24,32 @@ page = truffles.wrap(browser)
 # go to your favorite website
 page.goto("https://example.com/products")
 
+# define the pattern of your data
+class Product(BaseModel):
+    title: str = Field(description = "The name of the product")
+    price: float = Field(description = "The main listed price")
+
 # auto list detection
-items = await page.tools.get_main_list()
+item_list = await page.tools.get_main_list()
 
 # json structure from locator
-products = await items.tools.to_structure(
-    {
-        "title": str,
-        "price": float
-    }
-)
+products = await item_list.tools.to_structure(Product)
 ```
 
 ## Tools
 
-The `.tools` attribute is a namespace for all added tools, cleanly separating them from the page object.
+The `tools` attribute is a namespace for all added tools, cleanly separating them from the page object.
 
 ### Implemented Tools
 The repo contains a few tools that implement common patterns for web automation, that are powered by LLMs and have been proven to work well in the wild.
 Currently, the following tools are implemented or in the works:
 - Automatic List Detection
+- Intelligent & Robust Data Extraction (_under development_)
 - Autonomous Pagination (_under development_)
-- Intelligent & Safe Data Extraction (_under development_)
+- Support for Image Data Extraction (_under development_)
 
-### Context Manager
+
+### Store Manager
 The `StoreManager` is internally used by tools to store and retrieve reusable context in automations. This greatly reduces the amount of LLM calls required.
 In the future, a publicly shared context will be available as an optional feature to further reduce costs.
 The `StoreManager` operates mostly in the background and is automatically initialized when `truffles.start` is called, but it can also be initialized and accessed manually.
