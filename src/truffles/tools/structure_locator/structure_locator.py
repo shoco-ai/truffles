@@ -27,9 +27,6 @@ class LocatorToDictTool(BaseTool):
 
         # TODO: implement cropped screenshot passing
 
-        print("structure", structure)
-        print("element", element)
-
         model = LLMManager.get_model().with_structured_output(structure, include_raw=False)
         model = model.with_retry(
             retry_if_exception_type=(ValueError,),
