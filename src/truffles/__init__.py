@@ -6,8 +6,9 @@ from .context import ContextStore, MemoryContextStore, StoreManager
 from .enhanced.page import TPage
 from .models import LLMManager
 from .tools.list_detector.list_detector import ListDetector
+from .tools.structure_locator.structure_locator import LocatorToDictTool
 
-__all__ = ["ListDetector", "wrap", "__version__"]
+__all__ = ["ListDetector", "LocatorToDictTool", "wrap", "__version__"]
 
 __version__ = "0.1.0"
 
