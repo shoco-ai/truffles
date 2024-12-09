@@ -12,8 +12,6 @@ from ..base import BaseTool
 
 MAX_CHAR_LEN = 100000
 
-BATCH_SIZE = 20
-
 
 @TLocator.register_tool("to_structure")
 class LocatorToDictTool(BaseTool):
@@ -25,19 +23,20 @@ class LocatorToDictTool(BaseTool):
         super().__init__()
         self.locator = locator
 
-    async def _exec_impl(self, element, structure: BaseModel) -> Dict:
+    async def _exec_impl(self, element_text: str, structure: BaseModel) -> Dict:
         """Implementation of list getter"""
 
         # TODO: implement cropped screenshot passing
 
-        model = LLMManager.get_model().with_structured_output(structure, include_raw=False)
+        model = LLMManager.get_model().with_structured_output(
+            structure,
+            include_raw=True,  # set to false wo debug
+        )
         model = model.with_retry(
             retry_if_exception_type=(ValueError,),
             stop_after_attempt=2,
             wait_exponential_jitter=True,
         )
-
-        visible_text = (await element.text_content())[:MAX_CHAR_LEN]
 
         messages = [
             SystemMessage(
@@ -48,7 +47,7 @@ class LocatorToDictTool(BaseTool):
                 content=[
                     {
                         "type": "text",
-                        "text": visible_text,
+                        "text": element_text,
                     },
                 ]
             ),
@@ -72,13 +71,10 @@ class LocatorToDictTool(BaseTool):
             elements = await self.locator.all()
             if len(elements) > 1:
                 # Process in smaller batches to avoid timeout issues
-                results = []
-                for i in range(0, len(elements), BATCH_SIZE):
-                    batch = elements[i : i + BATCH_SIZE]
-                    tasks = [self._exec_impl(elem, structure) for elem in batch]
-                    batch_results = await asyncio.gather(*tasks)
-                    results.extend(batch_results)
+                text_contents = [(await elem.text_content())[:MAX_CHAR_LEN] for elem in elements]
+                tasks = [self._exec_impl(tc, structure) for tc in text_contents]
+                task_results = await asyncio.gather(*tasks)
 
-                return results
+                return task_results
 
         return await self._exec_impl(self.locator, structure)
