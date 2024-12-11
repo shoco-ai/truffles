@@ -163,6 +163,7 @@ cython_debug/
 
 third_party_testing.ipynb
 testing.ipynb
+test1.ipynb
 tmp/
 
 **/.ruff_cache

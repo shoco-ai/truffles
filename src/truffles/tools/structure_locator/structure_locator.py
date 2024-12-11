@@ -77,4 +77,4 @@ class LocatorToDictTool(BaseTool):
 
                 return task_results
 
-        return await self._exec_impl(self.locator, structure)
+        return await self._exec_impl(await self.locator.text_content(), structure)

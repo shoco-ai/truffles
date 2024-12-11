@@ -2,8 +2,6 @@ from typing import List, Optional
 
 from playwright.async_api import Locator, Page
 
-from truffles.utils.locator_ops import combine_locator_list
-
 from ...context.state import StoreManager
 from ...enhanced.locator import TLocator
 
@@ -109,7 +107,7 @@ class ListDetector(BaseTool):
             children = await wrapper.locator(":scope > *").all()
             all_children.extend(children)
 
-        return combine_locator_list(all_children)
+        return all_children  # could use combine_locator_list to combine
 
     async def execute(self, strategy: str = "llm", force_detect: bool = False, **kwargs) -> Optional[List[Locator]]:
         # TODO: make this nice and extensible
