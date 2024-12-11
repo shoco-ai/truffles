@@ -1,11 +1,6 @@
-from contextvars import ContextVar
-from threading import Lock
 from typing import Optional
 
 from .base import ContextStore, Marker
-from .exceptions import ContextError
-
-_store_context: ContextVar[Optional[ContextStore]] = ContextVar("store", default=None)
 
 
 class StoreManager:
@@ -14,26 +9,21 @@ class StoreManager:
     Uses contextvars for task isolation and threading.Lock for thread safety.
     """
 
-    _lock = Lock()
-    _default_store: Optional[ContextStore] = None
+    _context_store: ContextStore = None
 
     @classmethod
     def initialize(cls, store: ContextStore) -> None:
         """Initialize the default store"""
-        with cls._lock:
-            cls._default_store = store
-            _store_context.set(store)
+        cls._context_store = store
 
     @classmethod
     def get_store(cls) -> ContextStore:
         """Get the current store or default if none set"""
-        repo = _store_context.get()
-        if repo is None:
-            if cls._default_store is None:
-                raise ContextError("Context store not initialized. Call initialize() first.")
-            repo = cls._default_store
-            _store_context.set(repo)
-        return repo
+        if cls._context_store is None:
+            raise ValueError(  # TODO: is this the wrong error?
+                "StoreManager has not been initialized call `StoreManager.initialize()`"
+            )
+        return cls._context_store
 
     @classmethod
     async def get_marker(cls, page_state: str, action_name: str) -> Optional[Marker]:
@@ -53,6 +43,4 @@ class StoreManager:
     @classmethod
     def reset(cls) -> None:
         """Reset the store (useful for testing)"""
-        with cls._lock:
-            cls._default_store = None
-            _store_context.set(None)
+        cls._context_store = None
