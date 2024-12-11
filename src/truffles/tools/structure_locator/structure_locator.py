@@ -6,7 +6,7 @@ from playwright.async_api import Locator
 from pydantic import BaseModel, ValidationError
 
 from truffles.enhanced.locator import TLocator
-from truffles.models.config import LLMManager
+from truffles.models.default_model import DefaultModel
 
 from ..base import BaseTool
 
@@ -28,7 +28,7 @@ class LocatorToDictTool(BaseTool):
 
         # TODO: implement cropped screenshot passing
 
-        model = LLMManager.get_model().with_structured_output(
+        model = DefaultModel.get_model().with_structured_output(
             structure,
             include_raw=True,  # set to false wo debug
         )

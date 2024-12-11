@@ -4,7 +4,7 @@ from playwright.async_api import Page
 
 from .context import ContextStore, MemoryContextStore, StoreManager
 from .enhanced.page import TPage
-from .models import LLMManager
+from .models import DefaultModel
 from .tools.list_detector.list_detector import ListDetector
 from .tools.structure_locator.structure_locator import LocatorToDictTool
 
@@ -24,6 +24,6 @@ async def start(
 ):
     """Initialize the context manager and LLM manager."""
     StoreManager.initialize(context_store)
-    LLMManager.initialize(model)
+    DefaultModel.initialize(model)
 
     return

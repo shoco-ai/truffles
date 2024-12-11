@@ -11,7 +11,7 @@ from playwright.async_api import Locator, Page
 from pydantic import BaseModel, Field
 
 from truffles.context import AttributeMarker
-from truffles.models.config import LLMManager
+from truffles.models.default_model import DefaultModel
 
 from ..utils import (
     count_tags_in_soup,
@@ -72,7 +72,7 @@ class LLMStrategy(ListDetectionStrategy):
         """AI-powered detection using LLM"""
 
         # Initialize the model with structured output
-        model = LLMManager.get_model().with_structured_output(ListDetectionOutput, include_raw=False)
+        model = DefaultModel.get_model().with_structured_output(ListDetectionOutput, include_raw=False)
         model = model.with_retry(
             retry_if_exception_type=(ValueError,),
             stop_after_attempt=2,

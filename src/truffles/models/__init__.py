@@ -1,3 +1,3 @@
-from .config import LLMManager
+from .default_model import DefaultModel
 
-__all__ = ["LLMManager"]
+__all__ = ["DefaultModel"]
