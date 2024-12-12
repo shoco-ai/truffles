@@ -1,4 +1,3 @@
-import asyncio
 from typing import Dict
 
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -28,7 +27,7 @@ class LocatorToDictTool(BaseTool):
 
         # TODO: implement cropped screenshot passing
 
-        model = DefaultModel.get_model().with_structured_output(
+        model = DefaultModel.get_specific_model(model_size="small").with_structured_output(
             structure,
             include_raw=True,  # set to false wo debug
         )
@@ -60,21 +59,7 @@ class LocatorToDictTool(BaseTool):
         except ValidationError:
             return None
 
-    async def execute(
-        self,
-        structure: BaseModel,
-        per_element: bool = True,
-    ) -> Dict:
+    async def execute(self, structure: BaseModel) -> Dict:
         """Convert the locator content to a dictionary"""
-
-        if per_element:
-            elements = await self.locator.all()
-            if len(elements) > 1:
-                # Process in smaller batches to avoid timeout issues
-                text_contents = [(await elem.text_content())[:MAX_CHAR_LEN] for elem in elements]
-                tasks = [self._exec_impl(tc, structure) for tc in text_contents]
-                task_results = await asyncio.gather(*tasks)
-
-                return task_results
 
         return await self._exec_impl(await self.locator.text_content(), structure)
