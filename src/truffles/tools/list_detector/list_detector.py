@@ -2,14 +2,14 @@ from typing import List, Optional
 
 from playwright.async_api import Locator, Page
 
-from ...context.state import StoreManager
-from ...enhanced.locator import TLocator
+from truffles.context.state import StoreManager
+from truffles.enhanced.locator import TLocator
 
 # from ...t_page import TPage
 # from ...t_locator import TLocator
-from ...enhanced.page import TPage
-from ..base import BaseTool
-from .strategies.llm_strategy import LLMStrategy
+from truffles.enhanced.page import TPage
+from truffles.tools.base import BaseTool
+from truffles.tools.list_detector.strategies.llm_strategy import LLMStrategy
 
 ALLOWED_MATCH_MODES = ("exact", "contains")
 

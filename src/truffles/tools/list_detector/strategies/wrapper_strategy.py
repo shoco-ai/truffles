@@ -2,7 +2,7 @@ from typing import List, Optional
 
 from playwright.async_api import Locator, Page, TimeoutError
 
-from .base import ListDetectionStrategy
+from truffles.tools.list_detector.strategies.base import ListDetectionStrategy
 
 
 class WrapperStrategy(ListDetectionStrategy):

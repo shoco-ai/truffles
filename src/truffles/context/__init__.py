@@ -1,7 +1,7 @@
-from .base import ContextStore
-from .implementations.memory import MemoryContextStore
-from .marker import AttributeMarker, Marker, SimpleMarker
-from .state import StoreManager
+from truffles.context.base import ContextStore
+from truffles.context.implementations.memory import MemoryContextStore
+from truffles.context.marker import AttributeMarker, Marker, SimpleMarker
+from truffles.context.state import StoreManager
 
 __all__ = [
     "StoreManager",

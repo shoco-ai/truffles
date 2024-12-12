@@ -2,8 +2,8 @@ from typing import Any, Union
 
 from playwright.async_api import Locator
 
-from ..core.enhanced import Enhanced
-from ..utils.wrap import wrap_collection
+from truffles.core.enhanced import Enhanced
+from truffles.utils.wrap import wrap_collection
 
 
 class TLocator(Enhanced):

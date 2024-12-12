@@ -1,9 +1,9 @@
 import json
 from typing import Dict, Optional
 
-from ..base import ContextStore
-from ..exceptions import ContextError
-from ..marker import AttributeMarker, Marker, SimpleMarker
+from truffles.context.base import ContextStore
+from truffles.context.exceptions import ContextError
+from truffles.context.marker import AttributeMarker, Marker, SimpleMarker
 
 
 class MemoryContextStore(ContextStore):

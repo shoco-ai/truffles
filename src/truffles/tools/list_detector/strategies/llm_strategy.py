@@ -12,13 +12,13 @@ from pydantic import BaseModel, Field
 
 from truffles.context import AttributeMarker
 from truffles.models.default_model import DefaultModel
-
-from ..utils import (
+from truffles.tools.list_detector.utils import (
     count_tags_in_soup,
     find_elements_with_text,
     find_lowest_common_ancestor,
     get_attr_list,
 )
+
 from .base import ListDetectionStrategy
 
 

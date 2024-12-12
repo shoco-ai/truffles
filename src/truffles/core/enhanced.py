@@ -1,8 +1,8 @@
 from inspect import iscoroutinefunction
 from typing import Any, Dict, Type, TypeVar
 
-from ..tools.base import BaseTool
-from .tool_manager import ToolManager
+from truffles.core.tool_manager import ToolManager
+from truffles.tools.base import BaseTool
 
 T = TypeVar("T", bound=BaseTool)
 

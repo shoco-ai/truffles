@@ -2,7 +2,7 @@ import hashlib
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from .marker import Marker
+from truffles.context.marker import Marker
 
 
 class ContextStore(ABC):

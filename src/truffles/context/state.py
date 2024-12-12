@@ -1,6 +1,6 @@
 from typing import Optional
 
-from .base import ContextStore, Marker
+from truffles.context.base import ContextStore, Marker
 
 
 class StoreManager:

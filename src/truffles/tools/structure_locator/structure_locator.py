@@ -6,8 +6,7 @@ from pydantic import BaseModel, ValidationError
 
 from truffles.enhanced.locator import TLocator
 from truffles.models.default_model import DefaultModel
-
-from ..base import BaseTool
+from truffles.tools.base import BaseTool
 
 MAX_CHAR_LEN = 100000
 

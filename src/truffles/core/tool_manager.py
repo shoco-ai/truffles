@@ -2,7 +2,7 @@ from inspect import iscoroutinefunction
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .enhanced import Enhanced
+    from truffles.core.enhanced import Enhanced
 
 
 class ToolManager:

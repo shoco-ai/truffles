@@ -2,11 +2,11 @@ from langchain_anthropic import ChatAnthropic
 from langchain_core.language_models.chat_models import BaseChatModel
 from playwright.async_api import Page
 
-from .context import ContextStore, MemoryContextStore, StoreManager
-from .enhanced.page import TPage
-from .models import DefaultModel
-from .tools.list_detector.list_detector import ListDetector
-from .tools.structure_locator.structure_locator import LocatorToDictTool
+from truffles.context import ContextStore, MemoryContextStore, StoreManager
+from truffles.enhanced.page import TPage
+from truffles.models import DefaultModel
+from truffles.tools.list_detector.list_detector import ListDetector
+from truffles.tools.structure_locator.structure_locator import LocatorToDictTool
 
 __all__ = ["ListDetector", "LocatorToDictTool", "wrap", "__version__"]
 
