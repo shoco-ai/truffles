@@ -28,7 +28,7 @@ class LocatorToDictTool(BaseTool):
 
         model = DefaultModel.get_specific_model(model_size="small").with_structured_output(
             structure,
-            include_raw=True,  # set to false wo debug
+            include_raw=False,  # set to True for debugging
         )
         model = model.with_retry(
             retry_if_exception_type=(ValueError,),
