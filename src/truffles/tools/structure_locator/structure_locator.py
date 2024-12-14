@@ -1,12 +1,13 @@
 from typing import Dict
 
-from langchain_core.messages import HumanMessage, SystemMessage
 from playwright.async_api import Locator
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, Field, ValidationError
 
 from truffles.enhanced.locator import TLocator
 from truffles.models.default_model import DefaultModel
 from truffles.tools.base import BaseTool
+from truffles.tools.structure_locator.exceptions import StructureLocatorOutputValidationError
+from truffles.tools.structure_locator.messages import struct_locator_message
 
 MAX_CHAR_LEN = 100000
 
@@ -14,20 +15,24 @@ MAX_CHAR_LEN = 100000
 @TLocator.register_tool("to_structure")
 class LocatorToDictTool(BaseTool):
     """
-    Convert locator content to a dictionary using a language model
+    Convert locator content to a dictionary
     """
 
     def __init__(self, locator: Locator):
         super().__init__()
         self.locator = locator
 
-    async def _exec_impl(self, element_text: str, structure: BaseModel) -> Dict:
+    async def _exec_impl(self, element_text: str, structure: BaseModel, filter_relevance: bool = True) -> Dict:
         """Implementation of list getter"""
 
         # TODO: add implement cropped screenshot passing?
 
+        # add relevance filtering
+        class RelevanceFilter(structure):
+            is_relevant: bool = Field(description="Is this element relevant to the passed schema?")
+
         model = DefaultModel.get_specific_model(model_size="small").with_structured_output(
-            structure,
+            RelevanceFilter if filter_relevance else structure,
             include_raw=False,  # set to True for debugging
         )
         model = model.with_retry(
@@ -36,29 +41,23 @@ class LocatorToDictTool(BaseTool):
             wait_exponential_jitter=True,
         )
 
-        messages = [
-            SystemMessage(
-                content="""You are an AI model that converts the visible text on a webpage to structured data.
-                You always use the correct pydantic format if the element is relevant, else return None."""
-            ),
-            HumanMessage(
-                content=[
-                    {
-                        "type": "text",
-                        "text": element_text,
-                    },
-                ]
-            ),
-        ]
+        messages = struct_locator_message(element_text)
 
         try:
             response = await model.ainvoke(messages)  # for debugging set `include_raw = True`
+        except ValidationError:
+            raise StructureLocatorOutputValidationError("Error validating LLM output")
+
+        if filter_relevance:
+            if not response.is_relevant:
+                return None
+            else:
+                response_dict = response.model_dump(exclude={"is_relevant"})
+                return structure.model_validate(response_dict)
+        else:
             return response
 
-        except ValidationError:
-            return None
-
-    async def execute(self, structure: BaseModel) -> Dict:
+    async def execute(self, structure: BaseModel, filter_relevance: bool = True) -> Dict:
         """Convert the locator content to a dictionary"""
 
-        return await self._exec_impl(await self.locator.text_content(), structure)
+        return await self._exec_impl(await self.locator.text_content(), structure, filter_relevance)
