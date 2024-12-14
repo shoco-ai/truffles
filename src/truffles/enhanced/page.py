@@ -2,9 +2,9 @@ from typing import Any, Union
 
 from playwright.async_api import Locator, Page
 
-from ..core.enhanced import Enhanced
-from ..utils.wrap import wrap_collection
-from .locator import TLocator
+from truffles.core.enhanced import Enhanced
+from truffles.enhanced.locator import TLocator
+from truffles.utils.wrap import wrap_collection
 
 
 class TPage(Enhanced):

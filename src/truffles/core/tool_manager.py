@@ -2,7 +2,7 @@ from inspect import iscoroutinefunction
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .enhanced import Enhanced
+    from truffles.core.enhanced import Enhanced
 
 
 class ToolManager:
@@ -13,7 +13,7 @@ class ToolManager:
         self._tool_instances = {}
 
     def __getattr__(self, name: str):
-        """Handle tool execution with proper async/sync handling"""
+        """Handle tool execution with different handling for sync/async tools"""
         tools = self._enhanced.get_tools()
 
         if name not in tools:

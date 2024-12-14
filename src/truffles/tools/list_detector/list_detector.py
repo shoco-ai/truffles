@@ -1,16 +1,15 @@
 from typing import List, Optional
 
-from bs4 import BeautifulSoup
 from playwright.async_api import Locator, Page
 
-from ...context.state import ContextManager
-from ...enhanced.locator import TLocator
+from truffles.context.state import StoreManager
+from truffles.enhanced.locator import TLocator
 
 # from ...t_page import TPage
 # from ...t_locator import TLocator
-from ...enhanced.page import TPage
-from ..base import BaseTool
-from .strategies.llm_strategy import LLMStrategy
+from truffles.enhanced.page import TPage
+from truffles.tools.base import BaseTool
+from truffles.tools.list_detector.strategies.llm_strategy import LLMStrategy
 
 ALLOWED_MATCH_MODES = ("exact", "contains")
 
@@ -18,13 +17,12 @@ ALLOWED_MATCH_MODES = ("exact", "contains")
 @TPage.register_tool("get_main_list")
 class ListDetector(BaseTool):
     """
-    Main list detection tool that uses AI and caching to efficiently detect lists.
+    Main list detection tool that uses language models and caching to efficiently detect lists.
     """
 
     def __init__(self, page: Page):
         super().__init__()
         self.page = page
-        self._soup: Optional[BeautifulSoup] = None
 
     async def _get_list_by_item(
         self,
@@ -50,8 +48,6 @@ class ListDetector(BaseTool):
             ValueError: If neither item_selector nor item_attribute is provided, or if both are provided
         """
 
-        ALLOWED_MATCH_MODES = ("exact", "contains")
-
         # Input validation
         if item_selector and item_attribute:
             raise ValueError("Cannot provide both item_selector and item_attribute")
@@ -72,7 +68,7 @@ class ListDetector(BaseTool):
         else:
             attribute_selector = " and ".join([f'[{key}~="{value}"]' for key, value in item_attribute.items()])
 
-        elements = await self.locator(f"*{attribute_selector}").all()
+        elements = await self.locator(f"*{attribute_selector}")
         return elements
 
     async def _get_list_by_wrapper(
@@ -109,7 +105,7 @@ class ListDetector(BaseTool):
             children = await wrapper.locator(":scope > *").all()
             all_children.extend(children)
 
-        return all_children
+        return all_children  # could use combine_locator_list to combine
 
     async def execute(self, strategy: str = "llm", force_detect: bool = False, **kwargs) -> Optional[List[Locator]]:
         # TODO: make this nice and extensible
@@ -121,7 +117,7 @@ class ListDetector(BaseTool):
 
         # try to get cached result first
         if not force_detect:
-            cached_marker = await ContextManager.get_marker(page_state=page_state, action_name="list_detector")
+            cached_marker = await StoreManager.get_marker(page_state=page_state, action_name="list_detector")
 
             if cached_marker:
                 return await self._get_list_by_wrapper(wrapper_selector=cached_marker.get_selector())
@@ -131,11 +127,11 @@ class ListDetector(BaseTool):
         if not marker:
             return None
 
-        await ContextManager.store_marker(page_state=page_state, action_name="list_detector", marker=marker)
+        await StoreManager.store_marker(page_state=page_state, action_name="list_detector", marker=marker)
 
-        items = await self._get_list_by_wrapper(wrapper_selector=marker.get_selector())
+        items_locator = await self._get_list_by_wrapper(wrapper_selector=marker.get_selector())
 
-        return [TLocator(item) for item in items]
+        return items_locator
 
     async def _detect_list(
         self,

@@ -11,14 +11,14 @@ from playwright.async_api import Locator, Page
 from pydantic import BaseModel, Field
 
 from truffles.context import AttributeMarker
-from truffles.models.config import LLMManager
-
-from ..utils import (
+from truffles.models.default_model import DefaultModel
+from truffles.tools.list_detector.utils import (
     count_tags_in_soup,
     find_elements_with_text,
     find_lowest_common_ancestor,
     get_attr_list,
 )
+
 from .base import ListDetectionStrategy
 
 
@@ -72,7 +72,7 @@ class LLMStrategy(ListDetectionStrategy):
         """AI-powered detection using LLM"""
 
         # Initialize the model with structured output
-        model = LLMManager.get_model().with_structured_output(ListDetectionOutput, include_raw=False)
+        model = DefaultModel.get_model().with_structured_output(ListDetectionOutput, include_raw=False)
         model = model.with_retry(
             retry_if_exception_type=(ValueError,),
             stop_after_attempt=2,
@@ -129,7 +129,7 @@ class LLMStrategy(ListDetectionStrategy):
         list_element_candidates: List[str],
         use_attr_keys: bool = False,
     ) -> List[Locator]:
-        """Get list candidates from a string of HTML"""
+        """Get list candidates from all HTML frames"""
 
         soup_list = [BeautifulSoup(await fr.content(), "html.parser") for fr in page.frames]
         overall_counts = {}
