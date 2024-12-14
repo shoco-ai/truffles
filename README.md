@@ -3,11 +3,9 @@
 
 [![ci/tests](https://github.com/shoco-team/truffles/actions/workflows/ci-tests.yml/badge.svg)](https://github.com/shoco-team/truffles/actions/workflows/ci-tests.yml) [![cd/release](https://github.com/shoco-team/truffles/actions/workflows/release-please.yml/badge.svg)](https://github.com/shoco-team/truffles/actions/workflows/release-please.yml) [![Poetry](https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json)](https://python-poetry.org/) [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://docs.astral.sh/ruff/) [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
-> **Note:** Currently only supported with async playwright.
-
 An open-source framework that extends [playwright](https://playwright.dev) with automatic element detection, validation and structuring. Further utilities such as global caching of selectors reduce latency and cost.
 
-
+> **Note:** Currently only supported with async playwright.
 
 <!--<div align="center">
 | | |
