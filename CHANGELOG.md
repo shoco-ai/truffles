@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.1](https://github.com/shoco-ai/truffles/compare/truffles-v0.1.0...truffles-v0.1.1) (2024-12-14)
+
+
+### Bug Fixes
+
+* add weakref ([a565809](https://github.com/shoco-ai/truffles/commit/a565809c36cd726f5d7c255d06e08a7255f2b4c3))
+* cleanup ([#4](https://github.com/shoco-ai/truffles/issues/4)) ([fdaf6c1](https://github.com/shoco-ai/truffles/commit/fdaf6c1f172d935e87979fc4177f1a43d0081f6b))
+
 ## [0.1.0](https://github.com/shoco-team/truffles/compare/truffles-v0.1.0...truffles-v0.1.0) (2024-12-08)
 
 
