@@ -129,7 +129,7 @@ class LLMStrategy(ListDetectionStrategy):
         list_element_candidates: List[str],
         use_attr_keys: bool = False,
     ) -> List[Locator]:
-        """Get list candidates from a string of HTML"""
+        """Get list candidates from all HTML frames"""
 
         soup_list = [BeautifulSoup(await fr.content(), "html.parser") for fr in page.frames]
         overall_counts = {}

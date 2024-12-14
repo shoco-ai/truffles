@@ -17,7 +17,7 @@ ALLOWED_MATCH_MODES = ("exact", "contains")
 @TPage.register_tool("get_main_list")
 class ListDetector(BaseTool):
     """
-    Main list detection tool that uses AI and caching to efficiently detect lists.
+    Main list detection tool that uses language models and caching to efficiently detect lists.
     """
 
     def __init__(self, page: Page):
@@ -47,8 +47,6 @@ class ListDetector(BaseTool):
         Raises:
             ValueError: If neither item_selector nor item_attribute is provided, or if both are provided
         """
-
-        ALLOWED_MATCH_MODES = ("exact", "contains")
 
         # Input validation
         if item_selector and item_attribute:

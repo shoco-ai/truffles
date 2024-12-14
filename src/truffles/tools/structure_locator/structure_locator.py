@@ -14,7 +14,7 @@ MAX_CHAR_LEN = 100000
 @TLocator.register_tool("to_structure")
 class LocatorToDictTool(BaseTool):
     """
-    Locate the structure of the page.
+    Convert locator content to a dictionary using a language model
     """
 
     def __init__(self, locator: Locator):
@@ -24,7 +24,7 @@ class LocatorToDictTool(BaseTool):
     async def _exec_impl(self, element_text: str, structure: BaseModel) -> Dict:
         """Implementation of list getter"""
 
-        # TODO: implement cropped screenshot passing
+        # TODO: add implement cropped screenshot passing?
 
         model = DefaultModel.get_specific_model(model_size="small").with_structured_output(
             structure,

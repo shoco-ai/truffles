@@ -13,7 +13,7 @@ class ToolManager:
         self._tool_instances = {}
 
     def __getattr__(self, name: str):
-        """Handle tool execution with proper async/sync handling"""
+        """Handle tool execution with different handling for sync/async tools"""
         tools = self._enhanced.get_tools()
 
         if name not in tools:

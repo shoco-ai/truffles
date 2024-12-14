@@ -4,10 +4,7 @@ from truffles.context.base import ContextStore, Marker
 
 
 class StoreManager:
-    """
-    Thread and task-safe context manager for store access.
-    Uses contextvars for task isolation and threading.Lock for thread safety.
-    """
+    """Interface for storing and retrieving markers"""
 
     _context_store: ContextStore = None
 
@@ -18,11 +15,9 @@ class StoreManager:
 
     @classmethod
     def get_store(cls) -> ContextStore:
-        """Get the current store or default if none set"""
+        """Get the current store"""
         if cls._context_store is None:
-            raise ValueError(  # TODO: is this the wrong error?
-                "StoreManager has not been initialized call `StoreManager.initialize()`"
-            )
+            raise RuntimeError("StoreManager has not been initialized call `StoreManager.initialize()`")
         return cls._context_store
 
     @classmethod
@@ -42,5 +37,5 @@ class StoreManager:
 
     @classmethod
     def reset(cls) -> None:
-        """Reset the store (useful for testing)"""
+        """Reset the store (good for testing)"""
         cls._context_store = None

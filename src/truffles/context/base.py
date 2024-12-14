@@ -15,15 +15,15 @@ class ContextStore(ABC):
 
     @abstractmethod
     async def get_marker(self, page_state: str, action_name: str) -> Optional[Marker]:
-        """Get selector for a given page hash and action"""
+        """Get marker for a given page hash and action"""
         pass
 
     @abstractmethod
     async def store_marker(self, page_state: str, action_name: str, marker: Marker) -> None:
-        """Store selector for a given page hash and action"""
+        """Store marker for a given page hash and action"""
         pass
 
     @abstractmethod
     async def remove_marker(self, page_state: str, action_name: str, marker: Marker) -> None:
-        """Remove selector for a given page hash and action if it matches the provided marker"""
+        """Remove marker for a given page hash and action if it matches the provided marker"""
         pass

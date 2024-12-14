@@ -22,7 +22,7 @@ async def start(
     context_store: ContextStore = MemoryContextStore(),
     model: BaseChatModel = ChatAnthropic(model="claude-3-5-sonnet-20240620"),
 ):
-    """Initialize the context manager and LLM manager."""
+    """Initialize the StoreManager and LLMManager."""
     StoreManager.initialize(context_store)
     DefaultModel.initialize(model)
 
