@@ -17,7 +17,7 @@ class StoreManager:
     def get_store(cls) -> ContextStore:
         """Get the current store"""
         if cls._context_store is None:
-            raise RuntimeError("StoreManager has not been initialized call `StoreManager.initialize()`")
+            raise RuntimeError("StoreManager has not been initialized. Did you call `StoreManager.initialize()`?")
         return cls._context_store
 
     @classmethod
