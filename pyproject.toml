@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "truffles"
-version = "0.1.0"
+version = "0.1.1"
 description = "Tools for data extraction from the web with AI"
 authors = ["Shoco Team <truffles@shoco.ai>"]
 readme = "README.md"
