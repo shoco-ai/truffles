@@ -1,5 +1,5 @@
-from langchain_anthropic import ChatAnthropic
 from langchain_core.language_models.chat_models import BaseChatModel
+from langchain_openai import ChatOpenAI
 from playwright.async_api import Page
 
 from truffles.context import ContextStore, MemoryContextStore, StoreManager
@@ -20,7 +20,7 @@ async def wrap(page: Page):
 
 async def start(
     context_store: ContextStore = MemoryContextStore(),
-    model: BaseChatModel = ChatAnthropic(model="claude-3-5-sonnet-20240620"),
+    model: BaseChatModel = ChatOpenAI(model="gpt-4o"),
 ):
     """Initialize the StoreManager and LLMManager."""
     StoreManager.initialize(context_store)
