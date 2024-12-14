@@ -29,7 +29,7 @@ class LocatorToDictTool(BaseTool):
 
         # add relevance filtering
         class RelevanceFilter(structure):
-            is_relevant: bool = Field(description="Is this element relevant to the passed schema?")
+            is_relevant: bool = Field(description="Is this relevant to the pydantic entries?")
 
         model = DefaultModel.get_specific_model(model_size="small").with_structured_output(
             RelevanceFilter if filter_relevance else structure,
