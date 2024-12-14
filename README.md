@@ -25,7 +25,7 @@ $ pip install truffles
 
 ```
 
-After installation you may need to run `playwright install`. A more extensive introduction to the package can be found [here](https://github.com/shoco-team/truffles/examples/extract_list.ipynb). 
+After installation you may need to run `playwright install`. A more extensive introduction to the package can be found [here](https://github.com/shoco-team/truffles/examples/extract_list.ipynb).
 
 ## Quick Start
 A common workflow that is fully automated by `truffles` is data extraction from list elements:
@@ -55,7 +55,7 @@ results = await task.run()
 
 The `page.tools` and `locator.tools` currently extend playwright with automatic list detection and structured element extraction. This makes all `truffles` code
 * Natively integrated with [playwright](https://playwright.dev)
-  
+
 * Reusable across websites
 
 * Much more robust to page content and structure changes
@@ -80,19 +80,19 @@ await asyncio.gather(task_list)
 
 The repo contains tools that implement common patterns for web automation. They are commonly powered by LLMs and have been extensively tested. These are:
 - Automatic List Detection (see `get_main_list`)
-  
+
 - Intelligent & Robust Data Extraction (see `to_structure`)
-  
+
 - Advanced Assertions (_under development_)
-  
+
 - Autonomous Pagination (_under development_)
-  
+
 - Support for Image Data Extraction (_under development_)
 
 ### Extensibility
 Truffles is designed to be easily extensible. You can implement your own tools by inheriting from `BaseTool` and implementing the `execute` method.
 ```python
- 
+
 from truffles.tools import BaseTool
 
 class ValidateElementAlignment(BaseTool):
@@ -101,7 +101,7 @@ class ValidateElementAlignment(BaseTool):
 
         # your code here
         pass
- 
+
 ```
 
 

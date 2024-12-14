@@ -1,5 +1,6 @@
 from inspect import iscoroutinefunction
 from typing import TYPE_CHECKING
+from weakref import proxy
 
 if TYPE_CHECKING:
     from truffles.core.enhanced import Enhanced
@@ -9,7 +10,7 @@ class ToolManager:
     """Manages tool instances and execution for Enhanced objects"""
 
     def __init__(self, enhanced_obj: "Enhanced"):
-        self._enhanced = enhanced_obj
+        self._enhanced = proxy(enhanced_obj)
         self._tool_instances = {}
 
     def __getattr__(self, name: str):
