@@ -1,7 +1,11 @@
 # truffles 🍫
 
+[![Poetry](https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json)](https://python-poetry.org/) [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://docs.astral.sh/ruff/) [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/truffles.svg?logo=python&label=Python&logoColor=gold)](https://pypi.org/project/truffles/) [![PyPI - Installs](https://img.shields.io/pypi/dm/truffles.svg?color=blue&label=Installs&logo=pypi&logoColor=gold)](https://pypi.org/project/truffles/)
 
-[![ci/tests](https://github.com/shoco-team/truffles/actions/workflows/ci-tests.yml/badge.svg)](https://github.com/shoco-team/truffles/actions/workflows/ci-tests.yml) [![cd/release](https://github.com/shoco-team/truffles/actions/workflows/release-please.yml/badge.svg)](https://github.com/shoco-team/truffles/actions/workflows/release-please.yml) [![Poetry](https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json)](https://python-poetry.org/) [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://docs.astral.sh/ruff/) [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
+[![ci/tests](https://github.com/shoco-team/truffles/actions/workflows/ci-tests.yml/badge.svg)](https://github.com/shoco-team/truffles/actions/workflows/ci-tests.yml) [![cd/release](https://github.com/shoco-team/truffles/actions/workflows/release-please.yml/badge.svg)](https://github.com/shoco-team/truffles/actions/workflows/release-please.yml)
+
+
 
 An open-source framework that extends [playwright](https://playwright.dev) with automatic element detection, validation and structuring. Further utilities such as global caching of selectors reduce latency and cost.
 
