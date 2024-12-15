@@ -3,7 +3,7 @@ from typing import List
 from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage
 
 
-def struct_locator_message(element_text: str) -> List[BaseMessage]:
+def struct_locator_message(element_text: str, links: List[str]) -> List[BaseMessage]:
     messages = [
         SystemMessage(
             content="""You are an AI model that converts the visible text on a webpage to structured data.
@@ -11,6 +11,10 @@ def struct_locator_message(element_text: str) -> List[BaseMessage]:
         ),
         HumanMessage(
             content=[
+                {
+                    "type": "text",
+                    "text": "Links: [" + "\n".join(links) + "\n]",
+                },
                 {
                     "type": "text",
                     "text": element_text,

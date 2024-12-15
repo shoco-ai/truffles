@@ -166,5 +166,6 @@ testing.ipynb
 test1.ipynb
 mind2web_explore.ipynb
 tmp/
+projects/
 
 **/.ruff_cache

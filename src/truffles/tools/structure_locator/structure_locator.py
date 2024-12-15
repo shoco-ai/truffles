@@ -1,3 +1,4 @@
+import asyncio
 from typing import Dict
 
 from playwright.async_api import Locator
@@ -10,6 +11,7 @@ from truffles.tools.structure_locator.exceptions import StructureLocatorOutputVa
 from truffles.tools.structure_locator.messages import struct_locator_message
 
 MAX_CHAR_LEN = 100000
+MAX_NUM_LINKS = 3
 
 
 @TLocator.register_tool("to_structure")
@@ -22,7 +24,7 @@ class LocatorToDictTool(BaseTool):
         super().__init__()
         self.locator = locator
 
-    async def _exec_impl(self, element_text: str, structure: BaseModel, filter_relevance: bool = True) -> Dict:
+    async def _exec_impl(self, structure: BaseModel, filter_relevance: bool = True) -> Dict:
         """Implementation of list getter"""
 
         # TODO: add implement cropped screenshot passing?
@@ -41,7 +43,12 @@ class LocatorToDictTool(BaseTool):
             wait_exponential_jitter=True,
         )
 
-        messages = struct_locator_message(element_text)
+        element_text = await self.locator.text_content()
+
+        link_locs = await self.locator.get_by_role("link").all()
+        links = await asyncio.gather(*[link_loc.evaluate("element => element.href") for link_loc in link_locs])
+
+        messages = struct_locator_message(element_text, links[:MAX_NUM_LINKS])
 
         try:
             response = await model.ainvoke(messages)  # for debugging set `include_raw = True`
@@ -60,4 +67,4 @@ class LocatorToDictTool(BaseTool):
     async def execute(self, structure: BaseModel, filter_relevance: bool = True) -> Dict:
         """Convert the locator content to a dictionary"""
 
-        return await self._exec_impl(await self.locator.text_content(), structure, filter_relevance)
+        return await self._exec_impl(structure, filter_relevance)
