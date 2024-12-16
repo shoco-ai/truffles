@@ -13,6 +13,9 @@ __all__ = ["ListDetector", "LocatorToDictTool", "wrap", "__version__"]
 __version__ = "0.1.1"
 
 
+TRUFFLES_ATTRIBUTE_ID = "truffle-hog-041-id"
+
+
 async def wrap(page: Page):
     """Wrap a playwright Page object in a TPage object."""
     return TPage(page)
