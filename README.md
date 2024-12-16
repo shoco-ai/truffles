@@ -84,6 +84,7 @@ The repo contains tools that implement common patterns for web automation. They 
 - Intelligent & Robust Data Extraction (see `to_structure`)
 
 - HTML to Markdown Conversion using another [MIT Licensed Repo](https://github.com/JohannesKaufmann/html-to-markdown) (see `to_markdown`)
+    - Save the free key provided [here](https://html-to-markdown.com/api) to `HTML_TO_MARKDOWN_API_KEY`
 
 - Advanced Assertions (_under development_)
 
