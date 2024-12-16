@@ -83,6 +83,8 @@ The repo contains tools that implement common patterns for web automation. They 
 
 - Intelligent & Robust Data Extraction (see `to_structure`)
 
+- HTML to Markdown Conversion using another [MIT Licensed Repo](https://github.com/JohannesKaufmann/html-to-markdown) (see `to_markdown`)
+
 - Advanced Assertions (_under development_)
 
 - Autonomous Pagination (_under development_)
