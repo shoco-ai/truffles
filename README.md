@@ -87,11 +87,11 @@ The repo contains tools that implement common patterns for web automation. They 
 
 - Intelligent & Robust Data Extraction (see `to_structure`)
 
-- Advanced Assertions (_under development_)
+- Get Element by Prompt (_under development_)
 
-- Autonomous Pagination (_under development_)
+- Page to Markdown (_under development_)
 
-- Support for Image Data Extraction (_under development_)
+- Support for Image Data (_under development_)
 
 ### Extensibility
 Truffles is designed to be easily extensible. You can implement your own tools by inheriting from `BaseTool` and implementing the `execute` method.
