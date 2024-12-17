@@ -11,8 +11,15 @@ from truffles.utils.ax_tree.generate import generate_ax_tree
 
 class Output(BaseModel):
     match: str = Field(
-        description="Result of the search. 'found' if the content matches the prompt very well, 'partial' if the prompt is found but there are more elements (these will then be inspected separately), 'not_found' if the prompt is not found",
-        format="['found', 'partial', 'not_found']",
+        description="""
+        'not_found': No matching strings found.
+        'too_many': String found, but there is much more text around. (Will be recursively checked.)
+        'exact_match': String found, that matches description well, without extra elements.
+        """,
+    )
+    summary_input: str = Field(
+        description="Summary of input web elements",
+        format="str",
     )
 
 
@@ -25,11 +32,11 @@ class GetByPrompt(BaseTool):
     async def execute(self, prompt: str):
         ax_tree = await generate_ax_tree(self.page)
 
-        model = DefaultModel.get_model().with_structured_output(Output).with_retry()
+        model = DefaultModel.get_specific_model("small").with_structured_output(Output).with_retry()
 
         truffle_ids = await traverse(ax_tree, model, prompt)
 
         if len(truffle_ids) == 0:
             return None
 
-        return self.page.locator(f"{TRUFFLES_ATTRIBUTE_ID}={truffle_ids[0]}")
+        return self.page.locator(f'[{TRUFFLES_ATTRIBUTE_ID}="{truffle_ids[0]}"]')

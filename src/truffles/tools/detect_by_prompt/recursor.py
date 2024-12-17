@@ -2,13 +2,14 @@ import asyncio
 from enum import Enum
 
 from truffles.tools.detect_by_prompt.messages import get_prompt
+from truffles.utils.ax_tree.generate import get_node_text
 
 THRESHOLD = 2000
 
 
 class Result(Enum):
-    FOUND = "found"
-    PARTIAL = "partial"
+    EXACT_MATCH = "exact_match"
+    TOO_MANY = "too_many"
     NOT_FOUND = "not_found"
 
 
@@ -17,7 +18,7 @@ async def traverse(node, model, prompt):
     llm_calls = []
 
     async def _impl(node, depth=0):
-        if "text" not in node["properties"].keys() or len(node["properties"]["text"]) > THRESHOLD:
+        if len(get_node_text(node)) > THRESHOLD:
             if len(node["children"]) == 0:
                 return Result.NOT_FOUND
 
@@ -26,35 +27,35 @@ async def traverse(node, model, prompt):
                 out.append(_impl(c, depth + 1))
             await asyncio.gather(*out)
 
-            if Result.PARTIAL in out:
-                return Result.PARTIAL
-            elif Result.FOUND in out:
-                return Result.FOUND
+            if Result.TOO_MANY in out:
+                return Result.TOO_MANY
+            elif Result.EXACT_MATCH in out:
+                return Result.EXACT_MATCH
             else:
                 return Result.NOT_FOUND
 
         else:
-            # print("calling at depth", depth, "by node with id", node["id"])
-            # print("prompt: ", get_prompt(node, prompt))
-            # print("node: ", node)
+            if len(llm_calls) > 50:
+                raise Exception("Too many LLM calls")
+
             result = await model.ainvoke(get_prompt(node, prompt))
             llm_calls.append(result)
-            # print("result: ", result)
-            # print("locator list so far: ", id_list)
-            # print("-" * 30)
 
-            if result.match == "partial":
+            if result.match == "too_many":
                 out = []
                 for c in node["children"]:
                     out.append(_impl(c, depth + 1))
                 await asyncio.gather(*out)
-                return Result.PARTIAL
+                return Result.TOO_MANY
 
-            elif result.match == "found":
+            elif result.match == "exact_match":
                 id_list.append(node["id"])
-                return Result.FOUND
-            else:
+                return Result.EXACT_MATCH
+
+            elif result.match == "not_found":
                 return Result.NOT_FOUND
+            else:
+                print("GOT MYSTERIOUS RESPONSE: ", result)
 
     await _impl(node, 0)
 
