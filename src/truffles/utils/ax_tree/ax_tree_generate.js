@@ -27,7 +27,7 @@ function generateAccessibilityTree(truffles_attr_id) {
 
     function getNodeRole(node) {
         // Skip role check for text nodes
-        if (node.nodeType === 3) return null;
+        if (node.nodeType === NodeType.TEXT_NODE) return null;
 
         // Get explicit role
         const explicitRole = node.getAttribute ? node.getAttribute('role') : null;
@@ -48,7 +48,7 @@ function generateAccessibilityTree(truffles_attr_id) {
             'input': 'textbox',
             'ul': 'list',
             'ol': 'list',
-            'li': 'listitem'
+            'li': 'listitem',
         };
         return roleMap[tagName] || 'generic';
     }
@@ -110,38 +110,12 @@ function generateAccessibilityTree(truffles_attr_id) {
             // Get text content
             const text = node.textContent ? node.textContent.trim() : '';
             // const text = getFilteredTextContent(node);
-            if (text) {
+            if (text && node.nodeType === NodeType.TEXT_NODE) {
                 properties.text = text;
             }
         }
 
         return properties;
-    }
-
-    function getFilteredTextContent(node) {
-        if (!node) return '';
-
-        // Skip script and style tags
-        if (node.nodeType === NodeType.ELEMENT_NODE &&
-            node.tagName &&
-            ['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(node.tagName.toUpperCase())) {
-            return '';
-        }
-
-        // Handle text nodes
-        if (node.nodeType === NodeType.TEXT_NODE) {
-            return node.textContent.trim();
-        }
-
-        // Recursively process child nodes
-        let text = '';
-        if (node.childNodes && node.childNodes.length > 0) {
-            for (let i = 0; i < node.childNodes.length; i++) {
-                text += getFilteredTextContent(node.childNodes[i]) + ' ';
-            }
-        }
-
-        return text.trim();
     }
 
     function processNode(node) {

@@ -6,6 +6,13 @@ from playwright.async_api import Page
 from truffles import TRUFFLES_ATTRIBUTE_ID
 
 
+def get_node_text(node, separator="] ["):
+    if len(node["children"]) == 0:
+        return node["properties"].get("text", "")
+    else:
+        return "[ " + separator.join([get_node_text(child, separator) for child in node["children"]]) + " ]"
+
+
 def count_children(json_obj):
     counter = Counter()
 
@@ -23,18 +30,18 @@ def count_children(json_obj):
 
 
 def prune_tree(json_obj):
-    width = json_obj["properties"].get("boundingBox", {}).get("width", 1)
-    height = json_obj["properties"].get("boundingBox", {}).get("height", 1)
-    if not json_obj["properties"].get("isVisible", True) or width == 0 or height == 0:
-        return None
-    if len(json_obj["children"]) == 0:
-        return json_obj
-    elif len(json_obj["children"]) == 1:
-        return prune_tree(json_obj["children"][0])
-    else:
-        new_children = [prune_tree(child) for child in json_obj["children"]]
-        json_obj["children"] = [child for child in new_children if child is not None]
-        return json_obj
+    if len(json_obj["children"]) == 0:  # leaf case
+        if json_obj["properties"].get("text", "") == "":
+            return None
+        else:
+            return json_obj
+    else:  # non-leaf case
+        if len(json_obj["children"]) == 1:
+            return prune_tree(json_obj["children"][0])
+        else:
+            new_children = [prune_tree(child) for child in json_obj["children"]]
+            json_obj["children"] = [child for child in new_children if child is not None]
+            return json_obj
 
 
 async def generate_ax_tree(page: Page, prune: bool = True) -> str:
@@ -48,7 +55,7 @@ async def generate_ax_tree(page: Page, prune: bool = True) -> str:
         f"""() => {{
         {js_code}
         return generateAccessibilityTree("{TRUFFLES_ATTRIBUTE_ID}");
-    }}"""
+        }}"""
     )
 
     if prune:
