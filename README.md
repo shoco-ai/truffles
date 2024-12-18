@@ -29,7 +29,7 @@ $ pip install truffles
 
 ```
 
-After installation you may need to run `playwright install`. A more extensive introduction to the package can be found [here](https://github.com/shoco-team/truffles/examples/extract_list.ipynb).
+After installation you may need to run `playwright install`. A more extensive introduction to the package can be found [here](https://github.com/shoco-ai/truffles/blob/main/examples/extract_list.ipynb).
 
 ## Quick Start
 A common workflow that is fully automated by `truffles` is data extraction from list elements:
