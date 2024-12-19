@@ -10,7 +10,7 @@ from truffles.tools.structure_locator.structure_locator import LocatorToDictTool
 
 __all__ = ["ListDetector", "LocatorToDictTool", "wrap", "__version__"]
 
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 
 
 async def wrap(page: Page):
