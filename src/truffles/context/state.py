@@ -21,19 +21,31 @@ class StoreManager:
         return cls._context_store
 
     @classmethod
-    async def get_marker(cls, page_state: str, action_name: str) -> Optional[Marker]:
+    async def get_marker(cls, page_state: str, action_name: str, marker_id: Optional[str] = None) -> Optional[Marker]:
         """Get selector from current store"""
-        return await cls.get_store().get_marker(page_state, action_name)
+        return await cls.get_store().get_marker(page_state, action_name, marker_id)
 
     @classmethod
-    async def store_marker(cls, page_state: str, action_name: str, marker: Marker) -> None:
+    async def store_marker(
+        cls,
+        page_state: str,
+        action_name: str,
+        marker: Marker,
+        marker_id: Optional[str] = None,
+    ) -> None:
         """Store selector in current store"""
-        await cls.get_store().store_marker(page_state, action_name, marker)
+        await cls.get_store().store_marker(page_state, action_name, marker, marker_id)
 
     @classmethod
-    async def remove_marker(cls, page_state: str, action_name: str, marker: Marker) -> None:
+    async def remove_marker(
+        cls,
+        page_state: str,
+        action_name: str,
+        marker: Marker,
+        marker_id: Optional[str] = None,
+    ) -> None:
         """Remove selector from current store if it matches the provided marker"""
-        await cls.get_store().remove_marker(page_state, action_name, marker)
+        await cls.get_store().remove_marker(page_state, action_name, marker, marker_id)
 
     @classmethod
     def reset(cls) -> None:

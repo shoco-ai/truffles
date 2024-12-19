@@ -14,16 +14,28 @@ class ContextStore(ABC):
         return hashlib.sha256(page_state.encode("utf-8")).hexdigest()
 
     @abstractmethod
-    async def get_marker(self, page_state: str, action_name: str) -> Optional[Marker]:
+    async def get_marker(self, page_state: str, action_name: str, marker_id: Optional[str] = None) -> Optional[Marker]:
         """Get marker for a given page hash and action"""
         pass
 
     @abstractmethod
-    async def store_marker(self, page_state: str, action_name: str, marker: Marker) -> None:
+    async def store_marker(
+        self,
+        page_state: str,
+        action_name: str,
+        marker: Marker,
+        marker_id: Optional[str] = None,
+    ) -> None:
         """Store marker for a given page hash and action"""
         pass
 
     @abstractmethod
-    async def remove_marker(self, page_state: str, action_name: str, marker: Marker) -> None:
+    async def remove_marker(
+        self,
+        page_state: str,
+        action_name: str,
+        marker: Marker,
+        marker_id: Optional[str] = None,
+    ) -> None:
         """Remove marker for a given page hash and action if it matches the provided marker"""
         pass
