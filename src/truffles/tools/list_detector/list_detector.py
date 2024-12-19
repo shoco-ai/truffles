@@ -107,7 +107,13 @@ class ListDetector(BaseTool):
 
         return all_children  # could use combine_locator_list to combine
 
-    async def execute(self, strategy: str = "llm", force_detect: bool = False, **kwargs) -> Optional[List[Locator]]:
+    async def execute(
+        self,
+        strategy: str = "llm",
+        force_detect: bool = False,
+        marker_id: Optional[str] = None,
+        **kwargs,
+    ) -> Optional[List[Locator]]:
         # TODO: make this nice and extensible
         detection_strategies = ["basic", "statistical", "llm"]
         if strategy not in detection_strategies:
@@ -117,7 +123,9 @@ class ListDetector(BaseTool):
 
         # try to get cached result first
         if not force_detect:
-            cached_marker = await StoreManager.get_marker(page_state=page_state, action_name="list_detector")
+            cached_marker = await StoreManager.get_marker(
+                page_state=page_state, action_name="list_detector", marker_id=marker_id
+            )
 
             if cached_marker:
                 return await self._get_list_by_wrapper(wrapper_selector=cached_marker.get_selector())
@@ -127,7 +135,12 @@ class ListDetector(BaseTool):
         if not marker:
             return None
 
-        await StoreManager.store_marker(page_state=page_state, action_name="list_detector", marker=marker)
+        await StoreManager.store_marker(
+            page_state=page_state,
+            action_name="list_detector",
+            marker=marker,
+            marker_id=marker_id,
+        )
 
         items_locator = await self._get_list_by_wrapper(wrapper_selector=marker.get_selector())
 
