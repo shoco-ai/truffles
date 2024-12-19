@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.2.0](https://github.com/shoco-ai/truffles/compare/truffles-v0.1.1...truffles-v0.2.0) (2024-12-19)
+
+
+### Features
+
+* list based manual cache id setting ([a1d8922](https://github.com/shoco-ai/truffles/commit/a1d89228591ed50c837c4c752ca9581d84663b4a))
+
+
+### Bug Fixes
+
+* list based manual cache id setting ([#10](https://github.com/shoco-ai/truffles/issues/10)) ([a1d8922](https://github.com/shoco-ai/truffles/commit/a1d89228591ed50c837c4c752ca9581d84663b4a))
+* readme broken link ([5d1b5a5](https://github.com/shoco-ai/truffles/commit/5d1b5a56698bdca50195773fca2ed79c46f4f50b))
+* readme upd ([0ccc396](https://github.com/shoco-ai/truffles/commit/0ccc396e18c8f8090199d3353e1451be64cb4866))
+* upd gitignore ([0174c57](https://github.com/shoco-ai/truffles/commit/0174c57c0aa03c9c06c64b87bdca167ab23641f8))
+* update issue templates ([9ed7ec8](https://github.com/shoco-ai/truffles/commit/9ed7ec84b3a7851462b610cfc2d623c38d6283a2))
+
+
+### Documentation
+
+* Create LICENSE ([cfc5978](https://github.com/shoco-ai/truffles/commit/cfc5978c8cee99a8f27b5e7de3a74578d06a825f))
+* update README.md ([7efdd82](https://github.com/shoco-ai/truffles/commit/7efdd82453bf03afb7d2366230749a1728552449))
+
 ## [0.1.1](https://github.com/shoco-ai/truffles/compare/truffles-v0.1.0...truffles-v0.1.1) (2024-12-14)
 
 
